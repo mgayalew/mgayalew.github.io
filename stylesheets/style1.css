@@ -1,0 +1,285 @@
+@charset "UTF-8";
+
+article, aside, footer, header, main, nav, section {
+  display: block;
+}
+
+html, body, h1, h2, h3, ul, li, a, p, img,
+article, aside, footer, header, main, nav, section {
+  padding: 0;
+  margin: 0;
+}
+
+.banner {
+  background-color: none ;
+  color: black;
+  padding: 10px 20px;
+  font-size: 18px;
+  font-variant: normal;
+}
+
+
+body {
+  width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #f0f0f0;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 12px;
+}
+
+main {
+  width: 820px;
+  float: left;
+  margin-bottom: 10px;
+  background-color: #F6F7F7 ; 
+}
+
+main.main-blog {
+  width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #f0f0f0;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 12px;
+}
+
+
+form {
+  width: 800px;
+  float: left;
+  margin-bottom: 10px;
+  background-color: #F6F7F7 ; 
+  padding: 20px ;
+  font-size: 14px ;
+}
+
+table, th, td {
+	border: 1px solid gray  ;
+	height: 10px ;
+	width: 600 ;
+	margin-left: 5px ;
+	border-collapse: collapse ;
+	text-align: left ;
+	align: left ;
+}
+
+.tablenb, .thnb, .tdnb {
+	border: 0px solid black  ;
+	padding: 10px ;
+	text-align: left ;
+	height: 20px ;
+}
+
+/*
+body {
+  float: left;
+  max-width: 1100px;
+  padding: 20px ;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #f0f0f0;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 12px;
+}
+
+main {	
+  float: left;
+  max-width: 800px;
+  margin-bottom: 10px;
+  background-color: #F6F7F7 ; 
+  float: left;
+}
+*/
+aside {
+  float: left;
+  max-width: 230px; 
+  background-color: #f0f0f0 ; /*#bbbbbb;*/
+  margin-top: 10px;
+  margin-left: 20px ;
+}
+
+section {
+  background-color: white ; 
+  margin-top: 10px;
+  padding: 5px;
+}
+
+article {
+  background-color: white;
+  margin-top: 5px;
+  padding: 10px ;
+  /*box-shadow: 0px 0px 10px 5px #969696;*/
+}
+
+
+caption {
+  font-size: 16px;
+  font-weight: bold ;
+}
+
+h1 {
+	font-family: "Abril Fatface";
+	font-size: 24px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 600;
+	line-height: 26.4px;
+	margin-bottom: 20px ;
+}
+h2 {
+	font-family: "Abril Fatface";
+	font-size: 20px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 600;
+	line-height: 20px;
+	margin-bottom: 20px ;
+}
+h3 {
+	font-family: "Abril Fatface";
+	font-size: 18px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 600;
+	line-height: 15.4px;
+	margin-bottom: 20px ;
+}
+p {
+	font-family: "Abril Fatface";
+	font-size: 18px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 25px;
+}
+p.project-paragraph {
+	font-family: "Abril Fatface";
+	font-size: 18px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 25px;
+	padding: 5px ;
+}
+p.p2 {
+	font-family: "Abril Fatface";
+	font-size: 18px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 15px;
+}
+
+p.p3 {
+	font-family: "Lucida Console";
+	font-size: 13px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 250;
+	line-height: 20px;
+}
+		
+
+nav {
+  background-color: #125C88 ;
+  color: #F7FAFA   ;
+  padding: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+/* Hyper-link styles to different websites*/
+
+li a:link {
+    text-decoration: none;
+	color: #F7FAFA   ;
+}
+
+a:visited {
+    text-decoration: none;
+    color: #F7FAFA   ;
+}
+a:hover {
+    text-decoration: underline;
+    color: #F7FAFA   ;
+}
+a:active {
+    text-decoration: underline;
+    color: #F7FAFA   ;
+}
+
+/*This part will be used for the contact information*/
+a.cntctstyl{
+    text-decoration: none;
+	color: #4a4746 ;
+	font-size: 14px ;
+	font-weight: bold ;
+}
+
+a.txtlnk {
+    text-decoration: none;
+	color: darkgray ;
+}
+
+a.rsrc {
+    text-decoration: none;
+	color: darkblue  ;
+	padding-top: 5px ;
+	font-size: 16px ;
+}
+a.rsrc2 {
+    text-decoration: none;
+	color: black  ;
+	padding-top: 5px ;
+	font-size: 14px ;
+}
+
+a.blulnk {
+    text-decoration: none;
+	color: blue ;
+	font-size: 14px ;
+	font-weight: bold ;
+}
+
+a.skl {
+    text-decoration: none;
+	color: darkblue ;
+	font-size: 20px ;
+	font-weight: bold ;
+}
+
+
+li.cntctstyl{
+  display: inline;
+  margin-left: 15px;
+  margin-right: 15px;
+  font-size: 14px;
+  font-variant: normal ;
+  font-weight: bold ;
+  color: #4a4746 ;
+}
+
+
+li {
+  display: inline;
+  margin-left: 15px;
+  margin-right: 15px;
+  font-size: 16px;
+  font-variant: normal ; /*small-caps;*/
+  font-weight: bold;
+  color: black ;
+}
+
+footer {
+  clear: both;
+  background-color: none ; /*#20416c;*/
+  color: gray ;
+  padding: 5px 20px;
+}
+
+
+
+
+/* Classes for the comment box */
+#HCB_comment_box textarea{}#HCB_comment_box{font-family:verdana,serif;color:#888;background-color:#fff;}#HCB_comment_box p.error{border:1px solid red;background-color:#fee;}.hcb-mod b{color:#DD3344;}#HCB_comment_box textarea,#HCB_comment_box input.text{border-top:1px solid #e4e4e4;border-left:1px solid #e4e4e4;border-bottom:1px solid #eaeaea;border-right:1px solid #eaeaea;background-color:#f8f8f8;}#HCB_comment_box .hcb-wrapper-half{display:block;width:50%;float:left;}#HCB_comment_box .hcb-wrapper{clear:both;}#HCB_comment_box input.text{display:block;width:97%;}#HCB_comment_box input.submit{border-top:1px solid #eee;border-left:1px solid #eee;border-bottom:1px solid #888;border-right:1px solid #888;background-color:#ccc;color:#666;font-weight:bold;cursor:pointer;}#HCB_comment_box span.home-desc{font-size:10px;opacity:0.4;}#HCB_comment_box div.comment{border-bottom:1px dotted #eee;margin-bottom:5px;}.hcb-mod i{color:darkblue;}.hcb-link{color:blue;text-decoration:underline;}
