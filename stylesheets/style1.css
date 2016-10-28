@@ -169,10 +169,10 @@ p.p-about  {
 }		
 
 a.lnk-about:link, a.lnk-about:visited, a.lnk-about:hover, a.lnk-about:active  {
-    text-decoration: none;
+    	text-decoration: none;
 	font-family: "Verdana", Sans-serif ;
-	color: #404042   ; 
-	font-size: 20px;
+	color: red ; 
+	font-size: 20px ;
 	line-height: 35px;
 }			
 
