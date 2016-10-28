@@ -171,7 +171,7 @@ p.p-about  {
 a.lnk-about:link, a.lnk-about:visited, a.lnk-about:hover, a.lnk-about:active  {
     text-decoration: none;
 	font-family: "Verdana", Sans-serif ;
-	color: blue ; 
+	color: #404042   ; 
 	font-size: 20px;
 	line-height: 35px;
 }			
