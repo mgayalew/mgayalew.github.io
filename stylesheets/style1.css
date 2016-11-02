@@ -180,7 +180,7 @@ a.lnk-about:link, a.lnk-about:visited, a.lnk-about:hover, a.lnk-about:active  {
 nav {
   background-color: #125C88 ;
   color: #F7FAFA   ;
-  padding: 5px;
+  padding: 10px;
   margin-top: 5px;
   margin-bottom: 5px;
 }
