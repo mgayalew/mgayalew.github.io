@@ -274,6 +274,14 @@ footer {
   padding: 5px 20px;
 }
 
+#txtlnk-gray {
+    text-decoration: none;
+	color: darkgray ;
+}
+#txtlnk-black {
+    text-decoration: none;
+	color: black ;
+}
 /* Education page styles to divide the lower bottom into several column and make the top full page*/
 
 #main-courses {
