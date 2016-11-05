@@ -78,7 +78,14 @@ aside {
   margin-top: 10px;
   margin-left: 20px ;
 }
-
+nav.aside-dsm {
+  float: left;
+  max-width: 230px; 
+  background-color: #f0f0f0 ; /*#bbbbbb;*/
+  margin-top: 10px;
+  margin-left: 20px ;
+  margin-right: 0px ;
+}
 section {
   background-color: white ; 
   margin-top: 10px;
