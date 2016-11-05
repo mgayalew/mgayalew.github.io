@@ -176,6 +176,16 @@ a.lnk-about:link, a.lnk-about:visited, a.lnk-about:hover, a.lnk-about:active  {
 	line-height: 35px;
 }			
 
+a.txtlnk-gray:link, a.txtlnk-gray:visited, a.txtlnk-gray:hover, a.txtlnk-gray:active  {
+    text-decoration: none;
+	color: darkgray ;
+}
+
+a.txtlnk-black:link, a.txtlnk-black:visited, a.txtlnk-black:hover, a.txtlnk-black:active  {
+    text-decoration: none;
+	color: black ;
+}
+
 
 nav {
   background-color: #125C88 ;
@@ -274,14 +284,6 @@ footer {
   padding: 5px 20px;
 }
 
-#txtlnk-gray {
-    text-decoration: none;
-	color: darkgray ;
-}
-#txtlnk-black {
-    text-decoration: none;
-	color: black ;
-}
 /* Education page styles to divide the lower bottom into several column and make the top full page*/
 
 #main-courses {
