@@ -18,7 +18,6 @@ article, aside, footer, header, main, nav, section {
   font-variant: normal;
 }
 
-
 body {
   width: 1100px;
   margin-left: auto;
@@ -44,6 +43,12 @@ main.main-blog {
   font-size: 12px;
 }
 
+div.div-skills {
+    width: 280px;
+    padding: 10px;
+    border: 5px solid #FAF7F7 ;
+    margin: 0;
+}
 
 form {
   width: 800px;
