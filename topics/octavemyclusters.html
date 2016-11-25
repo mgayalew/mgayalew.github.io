@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	<meta charset="UTF-8">
+	<title>Muluemebet G Ayalew</title>
+	<link rel="stylesheet" type="text/css" href="../stylesheets/style-headerfooterside.css">
+	<link rel="stylesheet" type="text/css" href="../stylesheets/style-bodyandothers.css">
+	</head>
+	
+<body>
+	
+	<!-- Page header rows -->
+	<ul class="ul-first-nav-bar">
+		<li class="li-first-nav-bar"><a class="a-webpage-name active">DataScienceAndMe.com</a></li>
+	</ul>
+	<ul class="ul-first-nav-bar">
+		<li class="li-first-nav-bar"><a class="a-mt-header-name active">Muluemebet G Ayalew Page </a></li>
+		<li class="li-first-nav-bar"><a class="active">&#9742; 518-445-5698 </a></li>
+		<li class="li-first-nav-bar"><a class="active" href="mailto:mg.ayalew@gmail.com?Subject=">&#9993; mg.ayalew@gmail.com</a></li>
+		<li class="li-first-nav-bar"><a class="active" href="../documents/ayalew_resume.pdf">Resume</a></li>
+		<li class="li-first-nav-bar"><a class="active" href="https://www.linkedin.com/in/muluemebet-g-ayalew-8a91a310" target="_blank"><img src="../images/linkedin_logo.png" alt="Picture" style="width:50px;height:18px; align: left; vertical-align: middle;"></a></li>
+		<li class="li-first-nav-bar"><a class="active" href="https://github.com/mgayalew" target="_blank"><img src="../images/github_logo.jpg" alt="Picture" style="width:25px;height:25px; align: left; vertical-align: middle;"></a></li>
+	</ul>
+	<ul class="ul-second-nav-bar">
+		<li class="li-second-nav-bar"><a class="active" href="../index.html">Home</a></li>  
+		<li class="li-second-nav-bar"><a href="../about.html">About</a></li>  
+		<li class="li-second-nav-bar"><a href="../projects.html">Projects</a></li>  
+		<li class="li-second-nav-bar"><a href="../education.html">Education</a></li>  
+		<li class="li-second-nav-bar"><a href="../certificateskill.html">Data Science Certificates & Skills</a></li> 
+
+	</ul> 
+
+<article class="article-full-width">
+<h1>Cluster Analysis using K-means Algorithm</h1>
+<p>In this post, I illustrate the commonly used clustering algorithm called K-means using a self-written Octave functions/codes.  Indeed, there are readily available R, python and octave packages/functions which I listed at the end of this post. Cluster analysis groups similar objects together so that objects in the same group are more similar. It can be used for market segmentation, social network analysis, astronomical data analysis, and so on (see for example <a href="http://www.met.edu/Institutes/ICS/NCNHIT/papers/39.pdf">Bjiuraj <i>etal</i></a>).
+K-means clustering is unsupervised learning algorithm that groups a given dataset into k coherent clusters so that each observation belongs to a group with the nearest mean. The number of clusters (Ks) should be known or determined a priori, and for each cluster we need to provide initial means(centroids). </p> 
+<p>The data used for this post is obtained from the course material of Machine Learning course offered by Prof Andrew Ng from Stanford University. </P>
+<p>The steps listed below were followed to implement k-means algorithm:</P>
+<p>
+<b>Step-1:</b> Randomly initialize k points in the dataset as cluster centroid<br/>
+<b>Step-2:</b> Assign all observations into one of k groups based on which cluster centroid is closest to the observation. The closeness is measured by computing the square of the difference between each observation and the centroids (square of Euclidean distance).<br/> 
+<b>Step-3:</b> Update cluster centroids as the average of the observations inside the k cluster.<br/>
+<b>Step-4:</b> Repeat steps 2 and 3 until the algorithm converges.</p> 
+
+<p>The code in this example is executable in Octave / Matlab Software.</p>
+
+<h3>Preparing and Exploring Data</h3>
+<p>First, import the data<br/> 
+
+<div class="div-code">
+	<code>% import the data <br/> 
+		load('ex7data2.mat');</code>
+</div>
+<p>The data has 2 variables and 300 observations.  The first five observations are shown below:</p>
+
+<table class="table-center-fontcourier">
+<thead><tr><th>N</th><th>VAR1</th><th>VAR2</th></tr></thead><tbody>
+ <tr><td>1</td><td>1.84208</td><td>4.60757</td></tr>
+ <tr><td>2</td><td>5.65858</td><td>4.79996</td></tr>
+ <tr><td>3</td><td>6.35258</td><td>3.29085</td></tr>
+ <tr><td>4</td><td>2.90402</td><td>4.61220</td></tr>
+ <tr><td>5</td><td>3.23198</td><td>4.93989</td></tr>
+</tbody></table>
+<br/>
+
+
+<p>Before analyzing the data, it is good to explore and visualize to have a better sense of the data. For example, check the presence of missing values and visualize the distribution of the data. The summary statistics and scatter plot of the two continuous variables are shown below. There was no missing data in any of the variables. In addition the distribution of the two variables are similar.</P>
+
+<p style="text-align: center"><b>Table 1: Summary Statistics</b></P>
+	<table  class="table-center-fontcourier">
+		<tr>
+			<td></td>
+			<td>N</td>
+			<td>Mean</td>
+			<td>Std Dev.</td>
+			<td>Min.</td>
+			<td>1st Qu.</td>
+			<td>Median</td>
+			<td>3rd Qu.</td>
+			<td>Max.</td>
+		</tr>
+		<tr>
+			<td>VAR1</td>
+			<td>300</td>
+			<td>3.684</td>
+			<td>1.926</td>
+			<td>0.245</td>
+			<td>2.156</td>
+			<td>3.232</td>
+			<td>5.510</td>
+			<td>8.203</td>
+		</tr>
+		<tr>
+			<td>VAR2</td>
+			<td>300</td>
+			<td>2.987</td>
+			<td>1.685</td>
+			<td>0.206</td>
+			<td>1.211</td>
+			<td>2.950</td>
+			<td>4.808</td>
+			<td>5.784</td>
+		</tr>
+	</table>
+<br/>
+
+<p style="text-align: center"><b>Figure 1: Scatter Plot of Variables</b></p>
+<img src="clusterFigures/scatterPlot.png" alt="Picture" style="width:11cm;height:10cm;" class="img-center">
+		
+<h3>Determine Number of Clusters</h3>
+<p>The scatter plot indicates that there are three possible clusters. Often, the number of clusters are not clear or the number of variables are more than two and not straightforward to visualize. In such cases, one approach is to determine the optimal number of clusters using elbow method. The elbow method helps to visualize the sum of square errors (SSE) against the number of clusters, and helps to choose the best number of clusters based on a reasonably minimum SSE achieved for a reasonable small number of clusters. To make this plot, we need to run the algorithm for a number of clusters, for example 1 to 10. To confirm what was seen in the above figure, I plotted SSE against K. The variation on SSE after K=3 is minimal and therefore the figure indicates the presence of 3 clusters.</P>  
+		
+<p style="text-align: center"><b>Figure 2: Sum of Square Error against Number of Clusters</b><p>
+<img src="clusterFigures/elbowPlot.png" alt="Picture" style="width:10cm;height:10cm;" class="img-center"> 
+
+<h3>Steps to Implement K-means Cluster</h3>
+<p><b>Step-1:</b>  Randomly Initialize k Centroids<br/>
+Three observations are randomly selected from the dataset as initial centroids. Note that the centroids should be unique; however this doesn't guarantee that the k-means can't fall on local optima. Running the algorithm for several different random initials may help to avoid from falling on local optima.</p>
+
+<div class="div-code">
+<code>
+	% K (number of centroids)=3 <br/>
+	<span class="subcode">K=3;</span> <br/>
+	% X is a two dimensional dataset from which initial centroids are randomly selected  <br/>
+	rand_idx= randperm(size(X,1));   <br/>
+	initial_centroids= X(rand_idx(1:K), :); <br/>
+	centroids = initial_centroids; <br/>
+	previous_centroids = centroids; <br/>
+</code>	
+</div>
+
+<br/>
+<p><b>Step-2:</b> Assign each observation into one of the centroids<br/>
+Assign each observation in the dataset to the closest centroid. The function <code>findClosestCentroids</code>, defined below, returns a vector containing the closest centroid for each observation.</p>
+ 
+<div class="div-code">
+<code> function idx = findClosestCentroids(X, centroids)<br/>  
+    <span class="subcode1">[m,n]= size(X); %  m and n are number of rows and columns of the dataset X ;	</span> <br/>
+    <span class="subcode1">% Set K	</span>	 <br/>
+    <span class="subcode1">K = size(centroids, 1);	</span>	 <br/>
+    <span class="subcode1">dist= zeros(size(X, 1), K);  </span>	 <br/>
+    <span class="subcode1">c=0;	</span> 	 <br/>
+    <span class="subcode1">for i= 1:m	</span>	 <br/>
+		<span class="subcode2"> for k=1:K </span>	 <br/>
+            <span class="subcode3">for j= 1:n</span>		 <br/>
+                <span class="subcode4">% the distance from each observation to a centroid</span> 	 <br/>
+                <span class="subcode4">c=  c+ (X(i,j)-centroids(k,j)).^2 ; </span> 	 <br/>
+            <span class="subcode3">end	</span>	 <br/>
+            <span class="subcode3">dist(i,k)= c; %distance of each observation from each centroid </span>	 <br/>
+            <span class="subcode3">c=0 ;  % restart c to zero for next iteration  </span>	 <br/>
+        <span class="subcode2">end	 </span> <br/>
+    <span class="subcode1">end	 </span> 	 <br/>
+     <span class="subcode1">[min  idx]= min(dist , [], 2);  </span>    <br/>
+      <span class="subcode1">idx; %  a vector containing centroids closest to each observation	 </span>  <br/>         
+end   <br/>
+</code>
+</div>
+
+<br/>
+<p><b>Step-3:</b> Update cluster centroids</p>
+<div class="div-code">
+<code> % compute new centroids for each cluster using a user-defined function “updateCentroids”. <br/> 
+
+function centroids = updateCentroids(X, idx, K) <br/>
+    <span class="subcode1">clstr=0;	 </span>  	<br/>
+    <span class="subcode1">for k=1:K	 </span> 	<br/>
+    <span class="subcode2">clstr= find(idx==k);  % to find row index where idx==k 	 </span> 	<br/>
+    <span class="subcode2">centroids(k,:)= mean(X(clstr,:));	 </span>  <br/>
+     <span class="subcode2">clstr=0;	 </span>  <br/>
+     <span class="subcode1">end 	 </span>     <br/>
+end		<br/>
+ </code>
+</div>
+
+<br/>
+<p><b>Step-4:</b> Repeat steps 2 and 3 until the algorithm converges. <br/>
+In this example, the process stops when the maximum number of iteration reached.</p>
+<div class="div-code">
+<code> 
+  % maximum iteration to be 10 		<br/> 
+  max_iters = 10;		<br/> 
+  K=3;		<br/>
+% Plot the progress 		<br/>
+figure;		<br/>
+hold on;		<br/>
+% Create palette for coloring 		<br/>
+palette = hsv(K + 1);		<br/>
+%-------------------------------		<br/>
+%Run K-Means algorithm					<br/>
+%-------------------------------   		<br/>
+  for i=1:max_iters		<br/>
+    <span class="subcode1"> % Output progress </span>		<br/>
+     <span class="subcode1"> fflush(stdout); </span>		<br/>
+      
+     <span class="subcode1"> idx = findClosestCentroids(X, centroids); </span>		<br/><br/>
+    
+     <span class="subcode1"> % plot the progress  </span>		<br/>
+     <span class="subcode1"> % Plot simillar clustergroups  with the same color   </span>		<br/>
+      <span class="subcode1"> colors = palette(idx, :); </span>		<br/>
+       <span class="subcode1"> scatter(X(:,1), X(:,2), 15, colors);	 </span>	<br/><br/>
+    
+     <span class="subcode1"> % Plot the centroids as black x's  </span>		<br/>
+      <span class="subcode1">  plot(centroids(:,1), centroids(:,2), 'x', 'MarkerEdgeColor','k', 'MarkerSize', 10, 'LineWidth', 3);	 </span>	<br/><br/>
+    
+     <span class="subcode1"> % Plot the history of the centroids with lines	 </span>	<br/>
+     <span class="subcode1">   for j=1:size(centroids,1)	 </span>	<br/>
+     <span class="subcode2">      plot([centroids(j, 1), previous_centroids(j, 1)], [centroids(j, 2), previous_centroids(j, 2)]);	 </span>	<br/>
+     <span class="subcode1">  end	 </span>	<br/><br/>
+ 
+    <span class="subcode1"> % Title	 </span>		<br/>
+     <span class="subcode1">   title(sprintf('Iteration number %d', i))	 </span>		<br/><br/>
+
+     <span class="subcode1">    previous_centroids = centroids;	 </span>		<br/>
+   
+    <span class="subcode1"> % compute new centroids for each cluster	 </span>		<br/>
+    
+     <span class="subcode1">   centroids = updateCentroids(X, idx, K);	 </span>		<br/>
+         
+end;		<br/>
+
+    hold off;		<br/>
+</code>
+</div>
+
+<br/>
+<p style="text-align: center"><b>Figure 3: Scatter plot along with three clusters colored in red, green and blue.</b><br/>
+ The &#9747;s show the centroids at each iteration for a total number of 10 iterations. </p>  
+<img src="clusterFigures/clusterPlot.png" alt="Picture" style="width:15cm;height:13cm;" class="img-center"> 
+
+
+<h3>Summary:</h3>
+<p>I hope this post gives an insight on how k-mean algorithm works. Alternatively, we can use the existing Octave, R or Python functions that can handle K-means cluster analysis. These functions are:</p>
+
+<p><b>Octave:</b> use the function <code>kmeans</code> from <code>statistics</code> package.  For the details, you can refer to <a href="http://octave.sourceforge.net/statistics/function/kmeans.html" target="_blank">Octave documentation</a> </P>
+
+<p><b>R:</b>  use <code>kmeans</code> function from <code>stats</code> package.  For the details, you can refer to <a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/kmeans.html" target="_blank">R documentation</a>.</p>
+
+<p><b>Python: </b> From <code>scikit-learn</code> package,  you can use <code>sklearn.cluster.KMeans</code> class. For the details, you can refer to <a href="http://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html" target="_blank"> <code>sklearn.cluster.KMeans</code> documentation.</a> <br/> 
+ Or from <code>graphlab</code> package you can use <code>kmeans.create()</code> to perform cluster analysis. For the details, you can refer to <a href="https://turi.com/products/create/docs/generated/graphlab.kmeans.create.html#graphlab.kmeans.create" target="_blank"> <code>graphlab.kmeans.create</code> documentation.</a></p>
+
+</article>
+
+
+
+<!--comment line starst here -->
+<div id="disqus_thread"></div>
+<script>
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+var disqus_config = function () {
+this.page.url = 'http://datascienceandme.com/rimportdata.html';  // Replace PAGE_URL with your page's canonical URL variable
+//this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+this.page.title = 'Importing Data Files into R'
+};
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//datascienceandme-com-1.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<script id="dsq-count-scr" src="//datascienceandme-com-1.disqus.com/count.js" async></script>                                
+
+
+	<!-- Page footer rows -->
+	<footer>
+	  <p>&#169; 2016 Muluemebet G. Ayalew</p>
+	</footer>
+
+
+</body>
+</html>
+
+

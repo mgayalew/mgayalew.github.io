@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	<meta charset="UTF-8">
+	<title>Muluemebet G Ayalew</title>
+	<link rel="stylesheet" type="text/css" href="../stylesheets/style-jupyternotes.css">
+	<link rel="stylesheet" type="text/css" href="../stylesheets/style-headerfooterside.css">
+	<link rel="stylesheet" type="text/css" href="../stylesheets/style-bodyandothers.css">
+	
+
+<!-- Loading mathjax macro -->
+<!-- Load mathjax -->
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+    <!-- MathJax configuration -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true,
+            processEnvironments: true
+        },
+        // Center justify equations in code and markdown cells. Elsewhere
+        // we use CSS to left justify single line equations in code cells.
+        displayAlign: 'center',
+        "HTML-CSS": {
+            styles: {'.MathJax_Display': {"margin": 0}},
+            linebreaks: { automatic: true }
+        }
+    });
+    </script>
+    <!-- End of mathjax configuration -->
+	</head>
+
+	<body>
+	<!-- Page header rows -->
+	<ul class="ul-first-nav-bar">
+		<li class="li-first-nav-bar"><a class="a-webpage-name active">DataScienceAndMe.com</a></li>
+	</ul>
+	<ul class="ul-first-nav-bar">
+		<li class="li-first-nav-bar"><a class="a-mt-header-name active">Muluemebet G Ayalew Page </a></li>
+		<li class="li-first-nav-bar"><a class="active">&#9742; 518-445-5698 </a></li>
+		<li class="li-first-nav-bar"><a class="active" href="mailto:mg.ayalew@gmail.com?Subject=">&#9993; mg.ayalew@gmail.com</a></li>
+		<li class="li-first-nav-bar"><a class="active" href="../documents/ayalew_resume.pdf">Resume</a></li>
+		<li class="li-first-nav-bar"><a class="active" href="https://www.linkedin.com/in/muluemebet-g-ayalew-8a91a310" target="_blank"><img src="../images/linkedin_logo.png" alt="Picture" style="width:50px;height:18px; align: left; vertical-align: middle;"></a></li>
+		<li class="li-first-nav-bar"><a class="active" href="https://github.com/mgayalew" target="_blank"><img src="../images/github_logo.jpg" alt="Picture" style="width:25px;height:25px; align: left; vertical-align: middle;"></a></li>
+	</ul>
+	<ul class="ul-second-nav-bar">
+		<li class="li-second-nav-bar"><a class="active" href="../index.html">Home</a></li>  
+		<li class="li-second-nav-bar"><a href="../about.html">About</a></li>  
+		<li class="li-second-nav-bar"><a href="../projects.html">Projects</a></li>  
+		<li class="li-second-nav-bar"><a href="../education.html">Education</a></li>  
+		<li class="li-second-nav-bar"><a href="../certificateskill.html">Data Science Certificates & Skills</a></li> 
+
+	</ul> 
+
+  
+
+  <div tabindex="-1" id="notebook" class="border-box-sizing" >
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Importing-Data-Files-into-R">Importing Data Files into R</h1>
+<p>Preparing and managing data is one of the most time-consuming task for data scientists. Importing data into a data science software is the first step for the downstream analysis, which seems trivial but at times frustrating and time consuming to figure out the right way. Data can be directly entered into a system (often feasible only for small data), or imported into analytical and visualization software from different data file formats. In this post, I put together a list of R packages/functions (see Table below) with illustrations that, I hope, will ease the burden of locating the right package/function. Note that the table neither list all data file formats nor all available packages. For a comprehensive R import/export discussion you can read <a href="https://cran.r-project.org/doc/manuals/R-data.pdf">R Import/Export</a> documentation.</p>
+
+
+<p style="text-align: center"><b>R packages / functions to read/import data files </b></p>
+<table class="table-center">
+<tbody>
+
+<tr>
+<td><strong>Data File Format</strong></td>
+<td><strong>File extension</strong></td>
+<td><strong>R Package</strong></td>
+<td><strong>R Import Function</strong></td>
+</tr>
+<tr>
+<td>Text file</td>
+<td>.txt</td>
+<td>Base package 'utils'</td>
+<td>read.table()<br/>read.delim()*</td>
+</tr>
+<!--tr>
+<td>Tab delimited text</td>
+<td>.txt</td>
+<td>Base package 'utils'</td>
+<td>read.delim()*</td>
+</tr-->
+<tr>
+<td>Comma Separated Value (CSV)</td>
+<td>.csv</td>
+<td>Base package 'utils'</td>
+<td>read.csv()**</td>
+</tr>
+<tr>
+<td>Excel</td>
+<td>.xlsx</td>
+<td>xlsx</td>
+<td>read.xlsx()
+
+ </td>
+</tr>
+<tr>
+<td>OCTAVE</td>
+<td>.mat</td>
+<td>foreign <br/>	R.matlab</td>
+<td>read.octave() <br/>readMat()</td>
+</tr>
+<tr>
+<td>SPSS</td>
+<td>.sav</td>
+<td> foreign<br/>Hmisc</td>
+<td>read.spss()<br/>spss.get()</td>
+</tr>
+<tr>
+<td>SYSTAT</td>
+<td>.sys</td>
+<td>foreign</td>
+<td>read.systat()</td>
+</tr>
+<tr>
+<td>STATA</td>
+<td>.dta</td>
+<td>foreign</td>
+<td>read.dta()</td>
+</tr>
+<tr>
+<td>SAS</td>
+<td>.sas7bdat</td>
+<td>sas7bdat</td>
+<td>read.sas7bdat()</td>
+</tr>
+<tr>
+<td>SAS Transport file</td>
+<td>.xpt</td>
+<td>foreign<br/>Hmisc</td>
+<td>read.xport()<br/>sasxport.get()</td>
+</tr>
+<tr>
+<td>EpiInfo</td>
+<td>.rec</td>
+<td>foreign</td>
+<td>read.epiinfo()</td>
+</tr>
+<tr>
+<td>Minitab</td>
+<td>.mtp</td>
+<td>foreign</td>
+<td>read.mtp()</td>
+</tr>
+<tr>
+<td>RDA or RDATA</td>
+<td>.rda</td>
+<td>base</td>
+<td>load()</td>
+</tr>
+</tbody>
+</table>
+<p  style="text-align: center; font-size: 12px">* If comma is used instead of decimal point, use read.delim2()<br/>
+ ** If comma is used instead of decimal point, use read.csv2()</P>
+
+
+
+<p>Before running the data import function, make sure that the required packages are installed. If the package is not base package or not installed previously, the first task is installing and loading the package. I wrote the following R function to install R packages along with any package that the given package depends on.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Install-R-package">Install R package<a class="anchor-link" href="#Install-R-package">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre><span></span><span class="c1">#  R function (r.pkg.install) to install multiple packages at once.  </span>
+
+r_pkg_install <span class="o">&lt;-</span> <span class="kr">function</span><span class="p">(</span>r_pkgs<span class="p">)</span>
+  <span class="kr">for</span> <span class="p">(</span>i <span class="kr">in</span> <span class="m">1</span><span class="o">:</span><span class="kp">length</span><span class="p">(</span>r_pkgs<span class="p">)){</span>
+    <span class="c1"># &quot;dependencies&quot; option is TRUE to install all packages that a given package depends on. </span>
+    install.packages<span class="p">(</span><span class="kp">paste</span><span class="p">(</span>r_pkgs<span class="p">[</span>i<span class="p">]),</span> lib<span class="o">=</span><span class="s">&quot;directory you want to install package&quot;</span><span class="p">,</span> 
+                     repos <span class="o">=</span> <span class="s">&quot;https://cran.cnr.berkeley.edu/&quot;</span><span class="p">,</span> dependencies <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+  <span class="p">}</span>
+
+<span class="c1"># List all R packages you need to install into your computer ;</span>
+
+r_pkg_install<span class="p">(</span>r_pkgs<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="s">&quot;xlsx&quot;</span><span class="p">,</span> <span class="s">&quot;XML&quot;</span><span class="p">,</span> <span class="s">&quot;sas7bdat&quot;</span><span class="p">,</span> <span class="s">&quot;foreign&quot;</span><span class="p">,</span> <span class="s">&quot;R.matlab&quot;</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre><span></span><span class="c1"># Locating the data file directory. </span>
+<span class="c1"># You can specify the full directory in the R function or, or change the working directory so that you don&#39;t need to specify every time you run your R function. </span>
+
+<span class="kp">setwd</span><span class="p">(</span><span class="s">&quot;C:/Users/TM/MWWW/dataset1/&quot;</span><span class="p">)</span> <span class="c1"># Replace by your working directory</span>
+
+<span class="c1"># Check working directory </span>
+<span class="kp">getwd</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+
+<div class="output_html rendered_html output_subarea ">
+"C:/Users/TM/MWWW/dataset1"
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre><span></span><span class="c1"># Note that each function has several arguments and can be checked using help() or ?. For example,</span>
+help<span class="p">(</span>read.table<span class="p">)</span>
+<span class="o">?</span>read.table
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Import-tab-delimeted-text-file">Import tab delimeted text file<a class="anchor-link" href="#Import-tab-delimeted-text-file">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre><span></span><span class="c1"># using read.table ;</span>
+
+tab_data <span class="o">&lt;-</span> read.table<span class="p">(</span><span class="s">&quot;iris.txt&quot;</span><span class="p">,</span> header <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+<span class="kp">head</span><span class="p">(</span>tab_data<span class="p">)</span>
+
+<span class="c1"># Or using read.delim ;</span>
+
+delim_data <span class="o">&lt;-</span> read.delim<span class="p">(</span><span class="s">&quot;iris.txt&quot;</span><span class="p">,</span> sep<span class="o">=</span><span class="s">&quot;\t&quot;</span><span class="p">,</span> header <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+<span class="kp">head</span><span class="p">(</span>delim_data<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+
+<div class="output_html rendered_html output_subarea ">
+<table>
+<thead><tr><th></th><th scope=col>Sepal_L</th><th scope=col>Sepal_W</th><th scope=col>Petal_L</th><th scope=col>Petal_W</th><th scope=col>Species</th></tr></thead>
+<tbody>
+	<tr><th scope=row>1</th><td>5.1   </td><td>3.5   </td><td>1.4   </td><td>0.2   </td><td>setosa</td></tr>
+	<tr><th scope=row>2</th><td>4.9   </td><td>3     </td><td>1.4   </td><td>0.2   </td><td>setosa</td></tr>
+	<tr><th scope=row>3</th><td>4.7   </td><td>3.2   </td><td>1.3   </td><td>0.2   </td><td>setosa</td></tr>
+	<tr><th scope=row>4</th><td>4.6   </td><td>3.1   </td><td>1.5   </td><td>0.2   </td><td>setosa</td></tr>
+	<tr><th scope=row>5</th><td>5     </td><td>3.6   </td><td>1.4   </td><td>0.2   </td><td>setosa</td></tr>
+	<tr><th scope=row>6</th><td>5.4   </td><td>3.9   </td><td>1.7   </td><td>0.4   </td><td>setosa</td></tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Caution should be taken in reading text files with an empty (" ") missing data value. For example, for missing data values within a tab delimited text file, you can specify sep="\t" option to read in the data properly.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre><span></span>tab_data <span class="o">&lt;-</span> read.table<span class="p">(</span><span class="s">&quot;iris.txt&quot;</span><span class="p">,</span> sep<span class="o">=</span><span class="s">&quot;\t&quot;</span><span class="p">,</span> header <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+<span class="kp">head</span><span class="p">(</span>tab_data<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Some data files coded missing values differently, for example "?". We can read such data using the na.string option. This will automatically replace the special missing values by NA. For example, if you are reading a data with missing value recorded as "?", then use the following code</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre><span></span>tab_data_missing <span class="o">&lt;-</span> read.table<span class="p">(</span><span class="s">&quot;iris_missing.txt&quot;</span><span class="p">,</span> na.strings<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="s">&quot;?&quot;</span><span class="p">),</span> header <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+<span class="kp">head</span><span class="p">(</span>tab_data_missing<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>On the other hand, if you want to replace NA by a different value, for example, replacing all NA by 0, you can use the following code</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre><span></span>tab_data<span class="p">[</span><span class="kp">is.na</span><span class="p">(</span>tab_data<span class="p">)]</span> <span class="o">&lt;-</span> <span class="m">0</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Import-comma-separated-value-(CSV)-file">Import comma separated value (CSV) file<a class="anchor-link" href="#Import-comma-separated-value-(CSV)-file">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre><span></span>csv_data <span class="o">&lt;-</span> read.csv<span class="p">(</span><span class="s">&quot;iris.csv&quot;</span> <span class="p">)</span>
+<span class="kp">head</span><span class="p">(</span>csv_data<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Import-excel-file">Import excel file<a class="anchor-link" href="#Import-excel-file">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre><span></span><span class="kn">library</span><span class="p">(</span>rJava<span class="p">)</span>
+<span class="kn">library</span><span class="p">(</span>xlsxjars<span class="p">)</span>
+<span class="kn">library</span><span class="p">(</span>xlsx<span class="p">)</span>
+
+xlsx_data <span class="o">&lt;-</span> read.xlsx<span class="p">(</span><span class="s">&quot;iris.xlsx&quot;</span><span class="p">,</span> sheetName <span class="o">=</span> <span class="s">&quot;iris&quot;</span> <span class="p">)</span>
+<span class="kp">head</span><span class="p">(</span>xlsx_data<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Import-SPSS-file">Import SPSS file<a class="anchor-link" href="#Import-SPSS-file">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre><span></span><span class="kn">library</span><span class="p">(</span>foreign<span class="p">)</span>
+
+spss_data <span class="o">&lt;-</span> read.spss<span class="p">(</span><span class="s">&quot;iris.sav&quot;</span><span class="p">,</span> to.data.frame <span class="o">=</span> <span class="kc">TRUE</span> <span class="p">)</span>
+<span class="kp">head</span><span class="p">(</span>spss_data<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Import-STATA-file">Import STATA file<a class="anchor-link" href="#Import-STATA-file">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre><span></span><span class="kn">library</span><span class="p">(</span>sas7bdat<span class="p">)</span>
+
+stata_data <span class="o">&lt;-</span> read.dta<span class="p">(</span><span class="s">&quot;iris.dta&quot;</span> <span class="p">)</span>
+ead<span class="p">(</span>stata_data<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Import-SAS-file">Import SAS file<a class="anchor-link" href="#Import-SAS-file">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre><span></span><span class="kn">library</span><span class="p">(</span>sas7bdat<span class="p">)</span>
+
+sas_data <span class="o">&lt;-</span> read.sas7bdat<span class="p">(</span><span class="s">&quot;iris.sas7bdat&quot;</span> <span class="p">)</span>
+<span class="kp">head</span><span class="p">(</span>sas_data<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Import-SAS-export-file">Import SAS export file<a class="anchor-link" href="#Import-SAS-export-file">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre><span></span><span class="kn">library</span><span class="p">(</span>foreign<span class="p">)</span>
+
+sasxpt_data <span class="o">&lt;-</span> read.xport<span class="p">(</span><span class="s">&quot;iris.xpt&quot;</span> <span class="p">)</span>
+<span class="kp">head</span><span class="p">(</span>sasxpt_data<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h3>
+<p>The above list helps to locate the right R package/function. When the file size is larger than the computer memory allocated to R, the functions may give you an error message. In such cases, you may 1) look for a computer with bigger memory that accommodate the file size 2) split the data into several small datasets, read and analyze each of them separately, and later combine the results. 3) Use R packages or techniques that are tailored to big data. See for example the discussion in <a id="blue-txtlnk-dsm" href="https://cran.r-project.org/web/views/HighPerformanceComputing.html">High-Performance and Parallel Computing with R</a>.</p><br/>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!--comment line starst here -->
+<div id="disqus_thread"></div>
+<script>
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+var disqus_config = function () {
+this.page.url = 'http://datascienceandme.com/rimportdata.html';  // Replace PAGE_URL with your page's canonical URL variable
+//this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+this.page.title = 'Importing Data Files into R'
+};
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//datascienceandme-com-1.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<script id="dsq-count-scr" src="//datascienceandme-com-1.disqus.com/count.js" async></script>                                
+
+
+	<!-- Page footer rows -->
+	<footer>
+	  <p>&#169; 2016 Muluemebet G. Ayalew</p>
+	</footer>
+
+</body>
+</html>
