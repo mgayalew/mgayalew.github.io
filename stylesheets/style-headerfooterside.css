@@ -1,0 +1,139 @@
+@charset "UTF-8";
+
+header, section, footer, aside, nav, main, article, figure {
+    display: block; 
+}
+
+html, body, h1, h2, h3, ul, li, a, p, img,
+article, aside, footer, header, main, nav, section {
+  padding: 0;
+  margin: 0;
+}
+
+/* First row navigation bar */
+
+ul.ul-first-nav-bar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #ffff80 /*#E5FFFF   ;/*#D6C000   ;*/
+}
+li.li-first-nav-bar {
+    float: left ;
+	border-right: none ;
+}
+
+li.li-first-nav-bar a {
+    display: block;
+    color: #4d4d00 ;
+    text-align: center;
+    padding:  5px 10px 10px 10px  ; 
+    text-decoration: none;
+	font-size: 16px ;
+	float: left;
+}
+
+li.li-first-nav-bar  a:hover:not(.active) {
+    background-color: #111;
+}
+.active {
+    background-color: none ;
+}
+
+li.li-first-nav-bar .a-mt-header-name  {
+	display: block; 
+	color: #4d4d00 ; 
+    text-align: center;
+	padding: 5px 100px 10px 10px  ; 
+    text-decoration: none;
+	font:italic bold 100% Georgia, serif;  
+	float: left;
+}
+li.li-first-nav-bar .a-webpage-name {
+	display: block; 
+	color: black; 
+	padding: 10px 10px 0px 10px  ; 
+	font:italic bold 125% Georgia, serif;  
+	float: left;
+}
+
+/* Second row navigation bar */
+
+ul.ul-second-nav-bar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #4d4d00  /*#125C88*/ ;
+	border-bottom: 5px solid #D6C000 ;
+}
+li.li-second-nav-bar {
+    float: left;
+	border-right:1px solid #bbb;
+}
+
+li.li-second-nav-bar  a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+	font-size: 18px ;
+	font-weight: bold ;
+}
+
+li.li-second-nav-bar  a:hover:not(.active) {
+    background-color: #111;
+}
+
+.active {
+    background-color: none ;
+}
+
+
+/* footer row */
+footer {
+  clear: both;
+  background-color: none ; /*#20416c;*/
+  color: gray ;
+  padding: 5px 20px;
+}
+
+/* aside */
+aside {
+  float: left;
+  max-width: 270px; 
+  background-color: #f0f0f0 ; 
+  padding: 20px;
+}
+
+div.div-skills {
+    width: 270px;
+    padding: 5px;
+    border: 5px solid #F6F7F7;/*#FAF7F7 ;*/
+    margin-top: 10px;
+	line-height: 1.5 ;
+	/*border-radius: 50%/10%; * This code is for a tv shape around asides*/
+}
+div.div-certificates {
+    width: 750px;
+    padding: 20px;
+    border: 5px solid #F6F7F7; 
+    margin-top: 10px;
+	line-height: 1.5 ;
+	background-color: #F2EDC1  ;
+}
+div.div-projects{
+    -webkit-column-count: 2; /* Chrome, Safari, Opera */
+    -moz-column-count: 2; /* Firefox */
+    column-count: 2;
+    -webkit-column-gap: 40px; /* Chrome, Safari, Opera */
+    -moz-column-gap: 40px; /* Firefox */
+    column-gap: 40px;
+    -webkit-column-rule: 1px solid lightgray; /* Chrome, Safari, Opera */
+    -moz-column-rule: 1px solid lightgray; /* Firefox */
+	background-color:  #F6F7F7 ;
+	padding: 0px 10px 10px 10px ;
+    column-rule: 1px solid lightgray;
+}

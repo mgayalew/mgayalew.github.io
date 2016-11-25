@@ -1,0 +1,183 @@
+@charset "UTF-8";
+
+header, section, footer, aside, nav, main, article, figure {
+    display: block; 
+}
+
+html, body, h1, h2, h3, ul, li, a, p, img,
+article, aside, footer, header, main, nav, section {
+  padding: 0;
+  margin: 0;
+}
+
+
+/* Body section */
+
+body {
+  float: center;
+  max-width: 1100px;
+  padding: 20px ;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #f0f0f0;
+}
+
+main  {	
+  float: left;
+  max-width: 800px;
+  margin: 0px ;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 150% ;
+}
+
+
+.main-full-width  {	
+  float: left;
+  width: 1100px;
+  margin: 0px ;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 150% ;
+}
+
+
+section, article {	
+  float: left;
+  max-width: 800px;
+  padding: 20px ;
+  margin: 10px 10px 10px 0px ;
+  background-color: #F6F7F7 ; 
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 150% ;
+}
+
+.article-full-width {	
+  float: left;
+  min-width: 95%  ;
+  padding: 20px ;
+  margin: 10px 10px 10px 0px ;
+  background-color: #F6F7F7 ; 
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 150% ;
+}
+p {
+	font-family: "Abril Fatface";
+	font-size: 18px;
+	font-style: normal;
+	font-variant: normal;
+	line-height: 1.5 ;
+	margin-bottom: 20px ;
+}
+p.p-about  {
+	font-family: "Verdana", Sans-serif ;
+	font-size: 20px;
+	font-weight: 400;
+	line-height: 35px;
+} 
+p.p-certificates {
+	font-family: "Lucida Console";
+	font-size: 13px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 250;
+	padding: 5px ;
+}
+p.p-resources {
+	font-family: "Lucida Console";
+	font-size: 13px;
+	padding: 5px 5px 0px 5px ;
+}
+
+h1, h2, h3 {
+	margin: 10px 10px 5px  0px;
+}
+h1 a, h2 a, h3 a, p a {
+	text-decoration: none ;
+}
+
+h2.h2-projects{
+	padding: 20px  ;
+	color: darkblue ;
+	text-align: center;
+}
+h3.h3-projects .h3-resources .h3-certificates{
+	padding: 0px  ;
+	color: black ;
+}
+
+.div-education-courses {
+    float: left;
+	width: 350px ;
+	height: 300px;
+	border: 5px solid  #F6F7F7 ;
+	background-color: #F3F0E8 ;
+}
+
+a.a-gray-link {
+    text-decoration: none;
+	color: #666666 ;
+}
+a.a-resources {
+    text-decoration: none;
+	font: 14px solid darkblue ;
+	line-height: 50% ;
+	color: #800000 ;
+}
+a.a-resources:hover, a.a-gray-link:hover  {
+    text-decoration: underline ;
+}
+a.a-certificates{
+    text-decoration: none;
+	font: 20px solid darkblue ;
+	padding: 0px ;
+}
+
+/*
+code{
+	margin-left: 10px ;
+}*/
+
+code .subcode1 {
+	margin-left: 30px ;
+}
+code .subcode2 {
+	margin-left: 60px ;
+}
+code .subcode3 {
+	margin-left: 90px ;
+}
+code .subcode4 {
+	margin-left: 120px ;
+}
+code.subcode-withintext {
+	font-weight: bold ;
+}
+
+div.div-code {
+	background-color: lightgray ;
+	border: 1px solid gray ;
+	margin-left: 20px ; 
+	padding-left: 20px ;
+	margin-bottom: 20px ;
+}  
+
+table.table-center {
+	margin-left:auto; 
+	margin-right:auto;
+}
+
+table.table-center-fontcourier {
+    margin-left:auto; 
+    margin-right:auto;
+	font-family: "Courier New" ;
+  }
+
+img.img-center {
+	display: block ;
+    margin-left:auto; 
+    margin-right:auto;
+  }
+ 
