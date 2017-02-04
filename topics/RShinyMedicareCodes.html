@@ -157,7 +157,7 @@ p<span class="p">(</span><span class="s">&quot;Note that if a given period and t
 <span class="kn">library</span><span class="p">(</span>stargazer<span class="p">)</span>
 
 
-<span class="c1"># Set up handles to database tables on app start</span>
+<span class="c1"># Import Medicare spending *.CSV dataset</span>
 mdClm <span class="o">&lt;-</span> read.csv<span class="p">(</span><span class="kp">paste</span><span class="p">(</span><span class="s">&quot;./data/Medicare Hospital Spending by Claim.csv&quot;</span><span class="p">,</span> sep<span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">))</span>
 mdClm <span class="o">&lt;-</span> arrange<span class="p">(</span>mdClm<span class="p">,</span> State<span class="p">,</span> Hospital_Name<span class="p">)</span>
 mdClm<span class="o">$</span>ID <span class="o">&lt;-</span> <span class="kp">seq</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="kp">length</span><span class="p">(</span>mdClm<span class="o">$</span>Hospital_Name<span class="p">),</span><span class="m">1</span><span class="p">)</span>
