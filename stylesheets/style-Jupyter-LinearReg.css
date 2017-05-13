@@ -11706,6 +11706,7 @@ div#notebook {
     display: block;
     page-break-inside: avoid; 
   }
+}	
   /*Added styles*/
 div.prompt {
 	display: none ;
