@@ -1579,6 +1579,7 @@ pre code {
   margin-left: auto;
   padding-left: 0px;
   padding-right: 0px;
+  max-width: 100% ; /*added to match my page*/	
 }
 @media (min-width: 768px) {
   .container {
@@ -1600,7 +1601,6 @@ pre code {
   margin-left: auto;
   padding-left: 0px;
   padding-right: 0px;
-  max-width: 100% ; /*added to match my page*/
 }
 .row {
   margin-left: 0px;
