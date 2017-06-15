@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	<meta charset="UTF-8">
+	<title>Muluemebet G Ayalew</title>
+	<link rel="stylesheet" type="text/css" href="../stylesheets/style-Jupyter-DocRetrieval.css">
+	<link rel="stylesheet" type="text/css" href="../stylesheets/style-headerfooterside.css">
+	<link rel="stylesheet" type="text/css" href="../stylesheets/style-bodyandothers.css">
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<!-- Custom stylesheet, it must be in the same directory as the html file -->
+<link rel="stylesheet" href="custom.css">
+
+<!-- Loading mathjax macro -->
+<!-- Load mathjax -->
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+    <!-- MathJax configuration -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true,
+            processEnvironments: true
+        },
+        // Center justify equations in code and markdown cells. Elsewhere
+        // we use CSS to left justify single line equations in code cells.
+        displayAlign: 'center',
+        "HTML-CSS": {
+            styles: {'.MathJax_Display': {"margin": 0}},
+            linebreaks: { automatic: true }
+        }
+    });
+    </script>
+    <!-- End of mathjax configuration --></head>
+	
+<body>
+
+	<!-- Page header rows -->
+	<ul class="ul-first-nav-bar">
+		<li class="li-first-nav-bar"><a class="a-webpage-name active">DataScienceAndMe.com</a></li>
+	</ul>
+	<ul class="ul-first-nav-bar">
+		<li class="li-first-nav-bar"><a class="a-mt-header-name active">Muluemebet G Ayalew Page </a></li>
+		<li class="li-first-nav-bar"><a class="active">&#9742; 518-445-5698 </a></li>
+		<li class="li-first-nav-bar"><a class="active" href="mailto:mg.ayalew@gmail.com?Subject=">&#9993; mg.ayalew@gmail.com</a></li>
+		<li class="li-first-nav-bar"><a class="active" href="../documents/ayalew_resume.pdf">Resume</a></li>
+		<li class="li-first-nav-bar"><a class="active" href="https://www.linkedin.com/in/muluemebet-g-ayalew-8a91a310" target="_blank"><img src="../images/linkedin_logo.png" alt="Picture" style="width:50px;height:18px; align: left; vertical-align: middle;"></a></li>
+		<li class="li-first-nav-bar"><a class="active" href="https://github.com/mgayalew" target="_blank"><img src="../images/github_logo.jpg" alt="Picture" style="width:25px;height:25px; align: left; vertical-align: middle;"></a></li>
+	</ul>
+	<ul class="ul-second-nav-bar">
+		<li class="li-second-nav-bar"><a class="active" href="../index.html">Home</a></li>  
+		<li class="li-second-nav-bar"><a href="../about.html">About</a></li>  
+		<li class="li-second-nav-bar"><a href="../projects.html">Projects</a></li>  
+		<li class="li-second-nav-bar"><a href="../education.html">Education</a></li>  
+		<li class="li-second-nav-bar"><a href="../certificateskill.html">Data Science Certificates & Skills</a></li> 
+
+	</ul> 
+
+
+<!-- Header end here -->
+
+
+  <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Document-Retrieval:-Comparison-of-Simple-Word-Count-and-Term-Frequency-Inverse-Document-Frequency">Document Retrieval: Comparison of Simple Word Count and Term Frequency-Inverse Document Frequency<a class="anchor-link" href="#Document-Retrieval:-Comparison-of-Simple-Word-Count-and-Term-Frequency-Inverse-Document-Frequency">&#182;</a></h1><p>This post demonstrates the difference between simple word count and term frequency-inverse document frequency(tf-idf) methods in document retrieval using an example. We use document retrieval method to retrieve /recommend/ similar articles with the article of interest.</p>
+<p>Word count approach counts the number of words found in a document and retrieve similar documents based on frequent words commonly available in the documents whereas tf-idf magnifies the most important words that are common locally and rare globally. In other words, important words are informative words that describe the unique aspect of a document.</p>
+<p>Mathematically, we can compute term frequency (simple word count) and tf-idf as:</p>
+$$tf = f_{w,d} $$$$idf= log(N /(1+D))$$$$tfidf= tf* idf  $$<p><strong>Where</strong>:  tf is term frequency (word count);  $f_{w,d} $ is the frequency of a word (w) in a document(d); idf is inverse document frequency (one is added in the denominator to avoid division by zero if the word is not in the corpus); N is the total number of documents in the corpus; D is the total number of documents containing the word; tfidf is term frequency-inverse document frequency.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Loading-the-data">Loading the data<a class="anchor-link" href="#Loading-the-data">&#182;</a></h3><p>The data was obtained from Machine Learning Foundation: A Case Study Approach course offered by University of Washington on Coursera. The analysis was performed using graphlab library, a python library that performs a range of machine learning tasks. For more information about graphlab, refer <a href="https://turi.com/products/create/docs/index.html"> here</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The data contains three columns; url, name and text to refer to the link to wikipedia article, the name of the person and  text of article, respectively. There are 59,071 observations.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">graphlab</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">people</span><span class="o">=</span> <span class="n">graphlab</span><span class="o">.</span><span class="n">SFrame</span><span class="p">(</span><span class="s1">&#39;people_wiki.gl&#39;</span><span class="p">)</span> <span class="c1"># load the data </span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">people</span><span class="o">.</span><span class="n">shape</span> <span class="c1"># the dimension of the data frame</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[4]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(59071, 3)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">people</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># the first two observations </span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;"><table frame="box" rules="cols">
+    <tr>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">URI</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">name</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">text</th>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">&lt;http://dbpedia.org/resou<br>rce/Digby_Morrell&gt; ...</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">Digby Morrell</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">digby morrell born 10<br>october 1979 is a former ...</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">&lt;http://dbpedia.org/resou<br>rce/Alfred_J._Lewy&gt; ...</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">Alfred J. Lewy</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">alfred j lewy aka sandy<br>lewy graduated from ...</td>
+    </tr>
+</table>
+[2 rows x 3 columns]<br/>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Counting-the-words-in-each-article-and-computing-their-tf-idf">Counting the words in each article and computing their tf-idf<a class="anchor-link" href="#Counting-the-words-in-each-article-and-computing-their-tf-idf">&#182;</a></h3><p>The following two graphlab functions perform two tasks. The first counts the words in the text column of the data and the second computes tf-idf. The results are then added to the original data as new columns.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">people</span><span class="p">[</span><span class="s2">&quot;word_count&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">graphlab</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">count_words</span><span class="p">(</span><span class="n">people</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">])</span>
+<span class="n">people</span><span class="p">[</span><span class="s2">&quot;tf-idf&quot;</span><span class="p">]</span><span class="o">=</span> <span class="n">graphlab</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">tf_idf</span><span class="p">(</span><span class="n">people</span><span class="p">[</span><span class="s2">&quot;word_count&quot;</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">people</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># the new data frame with word count and tfidf included </span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[7]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;"><table frame="box" rules="cols">
+    <tr>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">URI</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">name</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">text</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">word_count</th>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">&lt;http://dbpedia.org/resou<br>rce/Digby_Morrell&gt; ...</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">Digby Morrell</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">digby morrell born 10<br>october 1979 is a former ...</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">{'selection': 1,<br>'carltons': 1, 'being': ...</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">&lt;http://dbpedia.org/resou<br>rce/Alfred_J._Lewy&gt; ...</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">Alfred J. Lewy</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">alfred j lewy aka sandy<br>lewy graduated from ...</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">{'precise': 1, 'thomas':<br>1, 'closely': 1, ...</td>
+    </tr>
+</table>
+<table frame="box" rules="cols">
+    <tr>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">tf-idf</th>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">{'selection':<br>3.836578553093086, ...</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">{'precise':<br>6.44320060695519, ...</td>
+    </tr>
+</table>
+[2 rows x 5 columns]<br/>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Case-Example:-Retrieving-articles-similar-to-Hillary-Clinton">Case Example: Retrieving articles similar to Hillary Clinton<a class="anchor-link" href="#Case-Example:-Retrieving-articles-similar-to-Hillary-Clinton">&#182;</a></h2><p>In order to explore the difference between document retrieval with simple word count and tf-idf, I randomly picked an article written about the 67th United States Secretary of State, Hillary Clinton. Please note that the information on the articles may not reflect the current status of the people.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">HClinton</span> <span class="o">=</span> <span class="n">people</span><span class="p">[</span><span class="n">people</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;Hillary Rodham Clinton&quot;</span><span class="p">]</span> <span class="c1"># Querying information about Hillary Clinton</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">HClinton</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[9]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;"><table frame="box" rules="cols">
+    <tr>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">URI</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">name</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">text</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">word_count</th>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">&lt;http://dbpedia.org/resou<br>rce/Hillary_Rodham_Cl ...</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">Hillary Rodham Clinton</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">hillary diane rodham<br>clinton hlri dan rdm ...</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">{'serving': 1, 'office':<br>1, 'diplomacy': 1, ...</td>
+    </tr>
+</table>
+<table frame="box" rules="cols">
+    <tr>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">tf-idf</th>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">{'serving':<br>2.8470548673505855, ...</td>
+    </tr>
+</table>
+[? rows x 5 columns]<br/>Note: Only the head of the SFrame is printed. This SFrame is lazily evaluated.<br/>You can use sf.materialize() to force materialization.
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># The first few lines of Hillary Clinton&#39;s article</span>
+<span class="n">HClinton</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">800</span><span class="p">]</span>  
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[12]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;hillary diane rodham clinton hlri dan rdm klntn born october 26 1947 is a former united states secretary of state us senator and first lady of the united states from 2009 to 2013 she was the 67th secretary of state serving under president barack obama she previously represented new york in the us senate 2001 to 2009 before that as the wife of the 42nd president of the united states bill clinton she was first lady from 1993 to 2001 in the 2008 election clinton was a leading candidate for the democratic presidential nominationa native of illinois hillary rodham was the first student commencement speaker at wellesley college in 1969 and earned a jd from yale law school in 1973 after a brief stint as a congressional legal counsel she moved to arkansas and married bill clinton in 1975 rodham co&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Looking-into-the-most-frequent-words">Looking into the most frequent words<a class="anchor-link" href="#Looking-into-the-most-frequent-words">&#182;</a></h3><p>As you can see from the table below, "the", "in" and "of" are the most frequent words in Hillary Clinton's article and they are not informative to retrieve similar documents.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># convert the word count dictionary into a table having two columns, word and count.</span>
+<span class="n">hclinton_wc</span><span class="o">=</span> <span class="n">HClinton</span><span class="p">[[</span><span class="s1">&#39;word_count&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="s1">&#39;word_count&#39;</span><span class="p">,</span> <span class="n">new_column_name</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;word&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">])</span> 
+
+<span class="c1"># Word count of Hillary Clintons&#39;s article in descending order </span>
+<span class="n">hclinton_wc</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[13]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;"><table frame="box" rules="cols">
+    <tr>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">word</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">count</th>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">the</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">47</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">in</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">24</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">of</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">21</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">to</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">18</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">and</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">17</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">she</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">15</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">clinton</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">12</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">first</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">11</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">was</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">10</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">as</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">10</td>
+    </tr>
+</table>
+[285 rows x 2 columns]<br/>Note: Only the head of the SFrame is printed.<br/>You can use print_rows(num_rows=m, num_columns=n) to print more rows and columns.
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Looking-into-the-most-informative-words">Looking into the most informative words<a class="anchor-link" href="#Looking-into-the-most-informative-words">&#182;</a></h3><p>Informative words describe the uniqueness of a document for which similar documents will be retrieved. The tradeoff between rare globally and common locally can be balanced by weighing words by their tf-idf score. Words with large tf-idf score are more informative than words with low tf-idf score. In the article of Hillary Clinton, "clinton", "lady" and "she" are the most informative words.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># convert the &quot;tf-idf&quot; dictionary into a table having two columns, word and tf-idf.</span>
+<span class="n">hclinton_tfidf</span><span class="o">=</span><span class="n">HClinton</span><span class="p">[[</span><span class="s2">&quot;tf-idf&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="s2">&quot;tf-idf&quot;</span><span class="p">,</span><span class="n">new_column_name</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;word&quot;</span><span class="p">,</span> <span class="s2">&quot;tf-idf&quot;</span><span class="p">])</span>
+
+<span class="c1"># Sort by tf-idf in descending order.</span>
+<span class="n">hclinton_tfidf</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;tf-idf&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[15]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;"><table frame="box" rules="cols">
+    <tr>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">word</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">tf-idf</th>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">clinton</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">54.5083695903</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">lady</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">29.9147743198</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">she</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">23.7298085726</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">rodham</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">23.0719755697</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">arkansas</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">15.4462948262</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">secretary</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">14.9762072969</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">female</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">14.0107548062</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">us</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">13.5239331416</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">primaries</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">13.3380145514</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">hillary</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">12.005777535</td>
+    </tr>
+</table>
+[285 rows x 2 columns]<br/>Note: Only the head of the SFrame is printed.<br/>You can use print_rows(num_rows=m, num_columns=n) to print more rows and columns.
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Building-nearest-neighbors-models-with-word-count-and-tf-idf">Building nearest neighbors models with word count and tf-idf<a class="anchor-link" href="#Building-nearest-neighbors-models-with-word-count-and-tf-idf">&#182;</a></h2><p>In this post, <a href="https://en.wikipedia.org/wiki/Cosine_similarity"> cosine similarity </a> was used to compute the similarity of documents in the corpus. It is the most commonly used similarity measure in information retrieval. Graphlab computes the cosine distance which is one minus the cosine similarity. The smaller the cosine distance, the similar the documents are.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># knn model using word_count as feature </span>
+<span class="n">knn_model_wc</span> <span class="o">=</span> <span class="n">graphlab</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">people</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;word_count&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;name&#39;</span><span class="p">,</span><span class="n">distance</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">)</span>  
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+
+<div class="output_html rendered_html output_subarea ">
+<pre>Starting brute force nearest neighbors model training.</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># knn model using tfidf as feature</span>
+<span class="n">knn_model_tfidf</span> <span class="o">=</span> <span class="n">graphlab</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">people</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tf-idf&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;name&#39;</span><span class="p">,</span><span class="n">distance</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">)</span>  
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+
+<div class="output_html rendered_html output_subarea ">
+<pre>Starting brute force nearest neighbors model training.</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Retrieving-similar-articles-to-Hillary-Clinton-using-word-count">Retrieving similar articles to Hillary Clinton using word count<a class="anchor-link" href="#Retrieving-similar-articles-to-Hillary-Clinton-using-word-count">&#182;</a></h3><p>When I use word frequency as a feature to make neighbor search, I found the articles of Adrienne Corri, Maria Damanaki, Diana B. Henriques and Raylawni Branch close to Hillary Clinton’s article.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># the top four similar articles with Hillary Clinton using word_count as feature</span>
+<span class="n">query_wc</span><span class="o">=</span><span class="n">knn_model_wc</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">HClinton</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">query_wc</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[18]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;"><table frame="box" rules="cols">
+    <tr>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">query_label</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">reference_label</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">distance</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">rank</th>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">Hillary Rodham Clinton</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0.0</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">1</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">Adrienne Corri</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0.139590411438</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">2</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">Maria Damanaki</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0.144401350006</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">3</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">Diana B. Henriques</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0.14716344102</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">4</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">Raylawni Branch</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0.147796309614</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">5</td>
+    </tr>
+</table>
+[5 rows x 4 columns]<br/>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The following line of code prints the name of the people and the first few line of their article that are suggested as similar with Hillary Clinton's article including hers.</p>
+<p>As we can see from the text, the articles retrieved using word count are not very similar with Hillary Clinton. For example, the closest article is that of Adrienne Corri while she is an actress, Maria Damanaki is the global managing director for oceans and Diana B. Henriques is an American financial journalist and so on.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">similar_wc</span><span class="o">=</span> <span class="n">query_wc</span><span class="p">[</span><span class="s2">&quot;reference_label&quot;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">similar_wc</span><span class="p">)):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;{name}: {article}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">similar_wc</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">article</span><span class="o">=</span><span class="n">people</span><span class="p">[</span><span class="n">people</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">==</span><span class="n">similar_wc</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="s2">&quot;text&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">200</span><span class="p">]))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Hillary Rodham Clinton: hillary diane rodham clinton hlri dan rdm klntn born october 26 1947 is a former united states secretary of state us senator and first lady of the united states from 2009 to 2013 she was the 67th secr
+
+Adrienne Corri: adrienne corri born 13 november 1931 glasgow scotland is a british actress she was born adrienne riccoboni the daughter of olive smethurst and italian father luigi riccoboni sometimes spelt reccobini 
+
+Maria Damanaki: maria damanaki greek is the global managing director for oceans at the nature conservancydamanaki leads a global team focused on how the world manages its oceans including sustainable fisheries manage
+
+Diana B. Henriques: diana blackmon henriques born december 1948 is an american financial journalist and author working in new york city since 1989 she has been a reporter on the staff of the new york times working on sta
+
+Raylawni Branch: raylawni branch born 1941 hattiesburg forrest county mississippi united states is a black mississippi pioneer of the africanamerican civil rights movement 19551968 a professional nursing educator and 
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Retrieving-similar-articles-to-Hillary-Clinton-using-tfidf">Retrieving similar articles to Hillary Clinton using tfidf<a class="anchor-link" href="#Retrieving-similar-articles-to-Hillary-Clinton-using-tfidf">&#182;</a></h3><p>The tf-idf model suggested that the articles of Bill Clinton, Melanne Verveer, Barack Obama and Sheffield Nelson are the top four closest articles to Hillary Clinton.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#similar articles to Hillary Clinton using tfidf as feature</span>
+<span class="n">query_tfidf</span><span class="o">=</span><span class="n">knn_model_tfidf</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">HClinton</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">query_tfidf</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[20]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;"><table frame="box" rules="cols">
+    <tr>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">query_label</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">reference_label</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">distance</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">rank</th>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">Hillary Rodham Clinton</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0.0</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">1</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">Bill Clinton</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0.56949689935</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">2</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">Melanne Verveer</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0.740283986008</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">3</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">Barack Obama</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0.758358397887</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">4</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">Sheffield Nelson</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">0.777915202357</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">5</td>
+    </tr>
+</table>
+[5 rows x 4 columns]<br/>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The articles retrieved using tfidf make more sense. The closest article with hers is that of Bill Clinton as he is her spouse and politician. Other people listed above such as Barack Obama are politicians and may have more similarity with her.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Few lines of the articles of people similar to that of Hillary Clinton including hers.</span>
+<span class="n">similar_tfidf</span><span class="o">=</span> <span class="n">query_tfidf</span><span class="p">[</span><span class="s2">&quot;reference_label&quot;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">similar_tfidf</span><span class="p">)):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;{name}: {article}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">similar_tfidf</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">article</span><span class="o">=</span><span class="n">people</span><span class="p">[</span><span class="n">people</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">==</span><span class="n">similar_tfidf</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="s2">&quot;text&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">170</span><span class="p">]))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Hillary Rodham Clinton: hillary diane rodham clinton hlri dan rdm klntn born october 26 1947 is a former united states secretary of state us senator and first lady of the united states from 2009
+
+Bill Clinton: william jefferson bill clinton born william jefferson blythe iii august 19 1946 is an american politician who served from 1993 to 2001 as the 42nd president of the united
+
+Melanne Verveer: melanne verveer is the executive director of the georgetown institute for women peace and security at georgetown university and a founding partner of seneca point global 
+
+Barack Obama: barack hussein obama ii brk husen bm born august 4 1961 is the 44th and current president of the united states and the first african american to hold the office born in h
+
+Sheffield Nelson: e sheffield nelson born april 23 1941 is an american attorney businessman and politician from little rock arkansas originally a democrat nelson in 1990 ran for governor o
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion">&#182;</a></h2><p>Analyzing document similarity just by word count can be misleading as common words such as "the”, “of" and "in" may dominate rare informative words. Term frequency-inverse document frequency(tf-idf) addresses the problem by magnifying the most important words in the document and helps better retrieve similar documents. As we can see in the example of Hillary Clinton's article, simple word count retrieves the articles of people who are actress, director of ocean, financial journalist and so on. On the other hand, the articles retrieved using tfidf are that of politicians and Bill Clinton's article was the first to be suggested. From our common understanding, we can validate the outcome that someone reading about Hillary Clinton may be interested to read about Bill Clinton (her spouse) and other politicians including Barack Obama as retrieved using tf-idf.</p>
+
+</div>
+</div>
+</div>
+    </div>
+  </div>
+  
+  
+  <!--comment line starst here -->
+<div id="disqus_thread"></div>
+<script>
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+var disqus_config = function () {
+this.page.url = 'http://datascienceandme.com/RShinyMedicareCodes.html';  // Replace PAGE_URL with your page's canonical URL variable
+//this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+this.page.title = 'R Shiny Apps: Exploring Medicare Spending Across Providers'
+};
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//datascienceandme-com-1.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<script id="dsq-count-scr" src="//datascienceandme-com-1.disqus.com/count.js" async></script>                                
+
+
+	<!-- Page footer rows -->
+	<footer>
+	  <p>&#169; 2016 Muluemebet G. Ayalew</p>
+	</footer>
+  
+  
+</body>
+</html>
