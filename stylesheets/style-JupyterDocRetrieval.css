@@ -11714,4 +11714,4 @@ div#notebook {
 /* added style to avoid numbers in jupyter notebook cells */
 div.prompt {
 	display: none ;
-	}
+}
