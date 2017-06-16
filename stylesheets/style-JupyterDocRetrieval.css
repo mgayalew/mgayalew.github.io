@@ -1,5 +1,4 @@
-<style type="text/css">
-    /*!
+/*!
 *
 * Twitter Bootstrap
 *
@@ -11708,7 +11707,6 @@ div#notebook {
     page-break-inside: avoid; 
   }
 }
-</style>
 
 
 /* added style to avoid numbers in jupyter notebook cells */
