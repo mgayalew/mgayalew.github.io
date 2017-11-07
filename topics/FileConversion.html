@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	<meta charset="UTF-8">
+	<title>Muluemebet G Ayalew</title>
+	<link rel="stylesheet" type="text/css" href="../stylesheets/style-File-Conversion.css">
+	<link rel="stylesheet" type="text/css" href="../stylesheets/style-headerfooterside.css">
+	<link rel="stylesheet" type="text/css" href="../stylesheets/style-bodyandothers.css">
+
+
+<!-- Loading mathjax macro -->
+<!-- Load mathjax -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
+    <!-- MathJax configuration -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true,
+            processEnvironments: true
+        },
+        // Center justify equations in code and markdown cells. Elsewhere
+        // we use CSS to left justify single line equations in code cells.
+        displayAlign: 'center',
+        "HTML-CSS": {
+            styles: {'.MathJax_Display': {"margin": 0}},
+            linebreaks: { automatic: true }
+        }
+    });
+    </script>
+    <!-- End of mathjax configuration --></head>
+<body>
+  <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Automated-file-conversion-from-ipynb-to-html-or-pdf">Automated file conversion from ipynb to html or pdf<a class="anchor-link" href="#Automated-file-conversion-from-ipynb-to-html-or-pdf">&#182;</a></h2><p>I have been using jupyter notebook for a while and I found that opening ipynb files for a quick reference is not straightforward. Jupyter notebook has a functionality to download into a familiar and easy to share format such as html or pdf. However, it is cumbersome to download each and every file manually, especially when you have multiple files.</p>
+<p>In this post, I demonstrate step by step Jupyter notebook file conversion into html or pdf from command line. Using command line code, we can automatically convert all notebook files with “. ipynb" extension that were saved in a given directory or subdirectories. So that the converted html or pdf files can easily be opened and/or shared to others who do not use jupyter notebook.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Installing-important-tools">Installing important tools<a class="anchor-link" href="#Installing-important-tools">&#182;</a></h3><p>First, install the nbconvert library. The library can be used to convert “.ipynb” files into other formats such as html, LaTeX, pdf, Markdown and others. The full documentation for nbconvert is found <a href="">here</a>.</p>
+<ul>
+<li><p>nbconvert can be installed as:</p>
+
+<pre><code>   - pip install nbconvert    
+        or 
+   - conda install nbconvert
+
+</code></pre>
+<p>The nbconvert uses Pandoc and TeX to convert markdown to formats other than HTML and to convert to PDF, respectively.</p>
+</li>
+</ul>
+<ul>
+<li><p>Installing Pandoc:
+   Installation procedure for pandoc is different depending on what type of platform we use. You can get pandoc <a href="http://pandoc.org/installing.html">here</a>.</p>
+</li>
+<li><p>Installing TeX: Depending on the type of operating system we use, there are different packages:</p>
+<ul>
+<li>Linux: <a href="http://tug.org/texlive/">TeX Live</a></li>
+<li>macOS(OS X): <a href="http://www.tug.org/mactex/">MacTeX</a></li>
+<li>Windows: <a href="https://miktex.org">MikTeX</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="File-Conversion">File Conversion<a class="anchor-link" href="#File-Conversion">&#182;</a></h3><p>Once the packages are installed, we can automatically convert the ".ipynb" files found in a directory or subdirectory using the following command line syntax. The first line is to convert the notebooks to html and the second is to convert to pdf:</p>
+<p>1) To convert a single ipynb file:</p>
+
+<pre><code>        jupyter nbconvert --to html ipynb_file 
+        jupyter nbconvert --to pdf ipynb_file
+Make sure that the file is in the current working directory otherwise we need to provide the file path. 
+</code></pre>
+<p>2) To convert all ipynb files in a directory:</p>
+
+<pre><code>        jupyter nbconvert --to html directory_path/*.ipynb 
+        jupyter nbconvert --to pdf directory_path/*.ipynb
+
+The “directory_path” here refers to the path of the directory where the "ipynb" files are located. The wildcard character (*) before the ".ipynb" refers to all files with ".ipynb" extension found in the directory. 
+
+</code></pre>
+<p>3) To convert all ipynb files in subdirectories:</p>
+
+<pre><code>        jupyter nbconvert --to html directory_path/*/*.ipynb 
+        jupyter nbconvert --to pdf directory_path/*/*.ipynb
+
+The “directory_path” refers to the path of the directory containing subdirectories and the wildcard character (*) after the “directory_path” represents the subdirectories where the "ipynb" files are located. The second wildcard (*) refers to all files with ".ipynb" extension. </code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h3><p>I hope the step by step jupyter notebook file conversion helps you to make file opening and sharing easy especially if you have multiple notebook files. One of the issue here could be memory as you will have files with at least two formats. The html format takes more memory than the pdf format. But it only needs nbconvert and pandoc to be installed (relatively easy to convert), but for pdf you also need TeX. Depending on your need and computer memory, you can decide to which format to converted.</p>
+
+</div>
+</div>
+</div>
+    </div>
+  </div>
+  
+
+<!--comment line starst here -->
+<div id="disqus_thread"></div>
+<script>
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+var disqus_config = function () {
+this.page.url = 'http://datascienceandme.com/FileConversion.html';  // Replace PAGE_URL with your page's canonical URL variable
+//this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+this.page.title = 'Automated file conversion from ipynb to html or pdf'
+};
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//datascienceandme-com-1.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<script id="dsq-count-scr" src="//datascienceandme-com-1.disqus.com/count.js" async></script>                                
+
+
+	<!-- Page footer rows -->
+	<footer>
+	  <p>&#169; 2016 Muluemebet G. Ayalew</p>
+	</footer>
+
+</body>
+
+
+</html>
