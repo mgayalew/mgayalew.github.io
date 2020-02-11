@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8" />
+
+<title>Muluemebet G Ayalew</title>
+	<link rel="stylesheet" type="text/css" href="../stylesheets/style-Web-Scraping.css">
+	<link rel="stylesheet" type="text/css" href="../stylesheets/style-headerfooterside.css">
+	<link rel="stylesheet" type="text/css" href="../stylesheets/style-bodyandothers.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+
+
+
+<!-- Custom stylesheet, it must be in the same directory as the html file -->
+<link rel="stylesheet" href="custom.css">
+
+<!-- Loading mathjax macro -->
+<!-- Load mathjax -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS_HTML"></script>
+    <!-- MathJax configuration -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true,
+            processEnvironments: true
+        },
+        // Center justify equations in code and markdown cells. Elsewhere
+        // we use CSS to left justify single line equations in code cells.
+        displayAlign: 'center',
+        "HTML-CSS": {
+            styles: {'.MathJax_Display': {"margin": 0}},
+            linebreaks: { automatic: true }
+        }
+    });
+    </script>
+    <!-- End of mathjax configuration --></head>
+<body>
+  <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Web-Scraping-:">Web Scraping :<a class="anchor-link" href="#Web-Scraping-:">&#182;</a></h1><h2 id="Gathering-information-about-Companies-from-the-New-Zealand&#8217;s-public-registry">Gathering information about Companies from the New Zealand&#8217;s public registry<a class="anchor-link" href="#Gathering-information-about-Companies-from-the-New-Zealand&#8217;s-public-registry">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this post, I am going to demonstrate web scraping using BeautifulSoup, a Python package for parsing HTML and XML documents. <a href="&quot;https://en.wikipedia.org/wiki/Web_scraping&quot;">Web scaping</a> is a technique used to extract data from websites and save the data as a more structured format. Information about some companies from <a href="&quot;https://companies-register.companiesoffice.govt.nz&quot;">New Zealand companies registry</a> website was extracted. The webpage allows us to search companies by their name, number or NZBN(New Zealand Business Number). The goal of this scraping is to gather information about companies and compile it in a more structured or semi-structured form. Thus, follow-up analysis will be easier.</p>
+<p>To limit the number of companies, the keyword "Kiwi company" was used to search for only Kiwi companies. The list of Kiwi companies found in the registry are available <a href="&quot;https://app.companiesoffice.govt.nz/companies/app/ui/pages/companies/search?q=kiwi+companies&amp;entityTypes=LTD&amp;entityTypes=UNLTD&amp;entityTypes=COOP&amp;entityTypes=ASIC&amp;entityTypes=NON_ASIC&amp;entityStatusGroups=ALL&amp;incorpFrom=&amp;incorpTo=&amp;addressTypes=ALL&amp;addressKeyword=&amp;start=0&amp;limit=15&amp;sf=&amp;sd=&amp;advancedPanel=true&amp;mode=advanced#results&quot;">here</a>. Note that if the keyword is only "Kiwi" , the list will be different. Each company has a link that goes to a different <a href="&quot;https://app.companiesoffice.govt.nz/companies/app/ui/pages/companies/1658678&quot;">page</a> with some tabs providing different information about the company. The task was to collect all that information for each company and bring it together. Let us see how it was done!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Important-Libraries">Important Libraries<a class="anchor-link" href="#Important-Libraries">&#182;</a></h3><p>The following python libraries were used to perform the tasks commented next to them.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[76]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>                <span class="c1"># to request the webpage</span>
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="k">import</span> <span class="n">BeautifulSoup</span>  <span class="c1"># to make soup and pull data out of HTML</span>
+<span class="kn">import</span> <span class="nn">urllib.robotparser</span>      <span class="c1"># to check the legitimacy to scrap the web</span>
+<span class="kn">import</span> <span class="nn">json</span>                    <span class="c1"># to save the output as json file</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>            <span class="c1"># to  see saved data as dataframe </span>
+<span class="kn">import</span> <span class="nn">IPython</span>                 <span class="c1"># to display the webpage</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Check-If-Scraping-is-Allowed">Check If Scraping is Allowed<a class="anchor-link" href="#Check-If-Scraping-is-Allowed">&#182;</a></h2><p>Before scraping a web page, it is good to check the legitimacy to use. Website owners list their rules in a file called <a href="&quot;http://www.robotstxt.org/robotstxt.html&quot;">robots.txt</a>.</p>
+<p>The permission to scrap a web page can be checked using the following code:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[90]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># read the rules of the web site found in robots.txt</span>
+<span class="n">robots</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://companies-register.companiesoffice.govt.nz/robots.txt&quot;</span><span class="p">)</span>
+<span class="c1">#print(robots.text)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[91]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">robotpars</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">robotparser</span><span class="o">.</span><span class="n">RobotFileParser</span><span class="p">()</span>  <span class="c1">#instantiate the RobotFileParser</span>
+
+<span class="c1">#set the robots.txt url of the New Zealand Companies Office</span>
+<span class="n">robotpars</span><span class="o">.</span><span class="n">set_url</span><span class="p">(</span><span class="s2">&quot;https://companies-register.companiesoffice.govt.nz/robots.txt&quot;</span><span class="p">)</span>
+<span class="n">robotpars</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># Reads the robots.txt </span>
+
+<span class="c1"># to check if useragent can fetch the url, true means fetching is possible. </span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Can we fetch New Zealand Companies Office website?&quot;</span><span class="p">,</span> \
+      <span class="n">robotpars</span><span class="o">.</span><span class="n">can_fetch</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;https://companies-register.companiesoffice.govt.nz&quot;</span><span class="p">))</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Can we fetch New Zealand Companies Office website? True
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Search-Result">Search Result<a class="anchor-link" href="#Search-Result">&#182;</a></h3><p>Using the search word "Kiwi company", hundreds of companies are displayed as shown below.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># the link for search result of Kiwi companies available at New Zealand Companies Office website</span>
+<span class="n">url_Kiwi</span><span class="o">=</span> <span class="s2">&quot;https://app.companiesoffice.govt.nz/companies/app/ui/pages/companies/search?q=kiwi+company&amp;entityTypes=LTD&amp;entityTypes=UNLTD&amp;entityTypes=COOP&amp;entityTypes=ASIC&amp;entityTypes=NON_ASIC&amp;entityStatusGroups=ALL&amp;incorpFrom=&amp;incorpTo=&amp;addressTypes=ALL&amp;addressKeyword=&amp;start=0&amp;limit=15&amp;sf=&amp;sd=&amp;advancedPanel=true&amp;mode=advanced&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[81]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># diaplay the searched page</span>
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">IFrame</span><span class="p">(</span><span class="n">url_Kiwi</span><span class="p">,</span>  <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[81]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+
+        <iframe
+            width="800"
+            height="400"
+            src="https://app.companiesoffice.govt.nz/companies/app/ui/pages/companies/search?q=kiwi+company&entityTypes=LTD&entityTypes=UNLTD&entityTypes=COOP&entityTypes=ASIC&entityTypes=NON_ASIC&entityStatusGroups=ALL&incorpFrom=&incorpTo=&addressTypes=ALL&addressKeyword=&start=0&limit=15&sf=&sd=&advancedPanel=true&mode=advanced"
+            frameborder="0"
+            allowfullscreen
+        ></iframe>
+        
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Gathering-Information-from-the-Website">Gathering Information from the Website<a class="anchor-link" href="#Gathering-Information-from-the-Website">&#182;</a></h2><p>Once we check the legitimacy to scrap the website, the next step is to gather the relevant information about the companies.</p>
+
+<pre><code>    - First, get the link for search result of Kiwi companies 
+    - make a soup for the link containing search result 
+    - get company numbers appeared in the search result( I used only the first page)  
+    - knowing company numbers, collect all the relevant informations including:
+            - summary information 
+            - directors information
+            - shareholder information 
+            - addresses information      
+    - save the collected data as json file and look the data as dataframe
+
+</code></pre>
+<p>Google Chrome was used to inspect the html source code.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">getSoup</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;make a soup for a webpage given its url&quot;&quot;&quot;</span> 
+
+    <span class="c1"># request the webpage and get the text</span>
+    <span class="n">pagetext</span><span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+    <span class="c1">#make a soup and use html parser for the content of the web page </span>
+    <span class="n">soup</span><span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">pagetext</span><span class="p">,</span> <span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">soup</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">getCompanyNumberFP</span><span class="p">(</span><span class="n">soup</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get companies&#39; number displayed in the first page of the searched page. </span>
+<span class="sd">       soup: is the soup of a webpage that contains the companies we are looking for. Example &#39;Kiwi companies&#39;&quot;&quot;&quot;</span>
+    
+  <span class="c1"># links to company detail </span>
+    <span class="n">links</span><span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;link&quot;</span><span class="p">})</span> <span class="c1"># finds all &lt;a&gt; tags with attribute class=&quot;link&quot;</span>
+    <span class="n">companyNum</span><span class="o">=</span><span class="p">[]</span> <span class="c1"># place holder for companies&#39;s number</span>
+    <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">links</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;javascript:viewCompanyDetails&quot;</span> <span class="ow">in</span> <span class="n">link</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;href&quot;</span><span class="p">):</span>
+            <span class="n">href</span><span class="o">=</span><span class="n">link</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;href&quot;</span><span class="p">)</span>  <span class="c1"># get the hr</span>
+            <span class="n">num</span> <span class="o">=</span> <span class="n">href</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;javascript:viewCompanyDetails(&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">num</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;);&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="c1"># get only the number </span>
+            <span class="n">companyNum</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>  <span class="c1"># append company numbers listed in a single page</span>
+    <span class="k">return</span> <span class="n">companyNum</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># the first 15 coumpany numbers appeared by search result. </span>
+<span class="n">soupKiwi</span><span class="o">=</span> <span class="n">getSoup</span><span class="p">(</span><span class="n">url_Kiwi</span><span class="p">)</span> <span class="c1"># get the soup for Kiwi search result page </span>
+<span class="nb">print</span><span class="p">(</span><span class="n">getCompanyNumberFP</span><span class="p">(</span><span class="n">soupKiwi</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[&#39;1658678&#39;, &#39;5671967&#39;, &#39;3258968&#39;, &#39;904994&#39;, &#39;86417&#39;, &#39;6016487&#39;, &#39;863627&#39;, &#39;1116824&#39;, &#39;2060257&#39;, &#39;1837222&#39;, &#39;3922140&#39;, &#39;2307068&#39;, &#39;1472075&#39;, &#39;276849&#39;, &#39;970820&#39;]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Once we get the company number from above, we can proceed to the company detail to collect all relevant informations. We can collect one company information at a time or we can collectively gather information about many companies. But the latter takes longer to execute or might affect the performance of the website. I designed the program to collect information about a single entry and append to a datastore.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">makeAsoup</span><span class="p">(</span><span class="n">companyNumber</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;make a soup for a webpage that contains informtion about a company given its number. </span>
+<span class="sd">    CompanyNumber is uased as an ID for the spesific company &quot;&quot;&quot;</span> 
+    
+    <span class="n">a</span><span class="o">=</span> <span class="s2">&quot;https://app.companiesoffice.govt.nz/companies/app/ui/pages/companies/&quot;</span>
+    <span class="n">link</span><span class="o">=</span>  <span class="n">a</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">companyNumber</span><span class="p">)</span>
+    <span class="c1"># request the webpage and get the text</span>
+    <span class="n">pagetext</span><span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">link</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+    <span class="c1">#make a soup </span>
+    <span class="n">entrySoup</span><span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">pagetext</span><span class="p">,</span> <span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">entrySoup</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[57]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">entryInfoTabs</span><span class="p">(</span><span class="n">entrySoup</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; the function entryInfoTabs gets the soup of an entry (a company) and returns the links to navigate </span>
+<span class="sd">    to each information tab such as summary, directors, addresses, shareholders and so on &quot;&quot;&quot;</span>
+    
+    <span class="n">infoTab</span><span class="o">=</span><span class="p">{}</span>  <span class="c1"># place holder for tab name and link pair</span>
+    
+    <span class="c1"># navigate to  unordered list</span>
+    <span class="n">tabs</span><span class="o">=</span><span class="n">entrySoup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;ul&quot;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span><span class="s2">&quot;tabs&quot;</span><span class="p">})</span> <span class="c1"># finds a &lt;ul&gt; tag with attribute class=&quot;tabs&quot; </span>
+    <span class="n">li</span><span class="o">=</span> <span class="n">tabs</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;li&quot;</span><span class="p">)</span>   <span class="c1"># finds all lists </span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">li</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>           
+            <span class="c1"># collect the main page plus the addresses of each information tab(summary, directors, ...)</span>
+            <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://app.companiesoffice.govt.nz&quot;</span> <span class="c1"># main page</span>
+            <span class="n">infoTab</span><span class="p">[</span><span class="n">li</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)]</span><span class="o">=</span>  <span class="n">url</span> <span class="o">+</span> <span class="n">li</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;href&quot;</span><span class="p">)</span>                
+        
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">infoTab</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[58]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># see the tabs&#39; link for a company its number is 1658678, the first company appeared in the search result</span>
+<span class="n">entrySoup</span><span class="o">=</span> <span class="n">makeAsoup</span><span class="p">(</span><span class="s2">&quot;1658678&quot;</span><span class="p">)</span>
+<span class="n">entryInfoTabs</span><span class="p">(</span><span class="n">entrySoup</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[58]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;companySummaryTab&#39;: &#39;https://app.companiesoffice.govt.nz/companies/app/ui/pages/companies/1658678&#39;,
+ &#39;addressesTab&#39;: &#39;https://app.companiesoffice.govt.nz/companies/app/ui/pages/companies/1658678/addresses&#39;,
+ &#39;directorsTab&#39;: &#39;https://app.companiesoffice.govt.nz/companies/app/ui/pages/companies/1658678/directors&#39;,
+ &#39;shareholdingsTab&#39;: &#39;https://app.companiesoffice.govt.nz/companies/app/ui/pages/companies/1658678/shareholdings&#39;,
+ &#39;documents&#39;: &#39;https://app.companiesoffice.govt.nz/companies/app/ui/pages/companies/1658678/documents&#39;,
+ &#39;ppsrSearchTab&#39;: &#39;https://app.companiesoffice.govt.nzjavascript:performPpsrSearch()&#39;,
+ &#39;nzbnDetailsTab&#39;: &#39;https://app.companiesoffice.govt.nz/companies/app/ui/pages/companies/1658678/nzbnPbdView&#39;}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Look at the page displayed below to see and navigate to the tabs to get information about a specific company. To mention some, the tabs are Company Summary, Addresses, Directors, Shareholdings, Documents and so on.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[82]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># diaplay the tabs for a single company </span>
+<span class="n">companyinfo_url</span><span class="o">=</span> <span class="s2">&quot;https://app.companiesoffice.govt.nz/companies/app/ui/pages/companies/1658678&quot;</span>
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">IFrame</span><span class="p">(</span><span class="n">companyinfo_url</span><span class="p">,</span>  <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[82]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+
+        <iframe
+            width="800"
+            height="400"
+            src="https://app.companiesoffice.govt.nz/companies/app/ui/pages/companies/1658678"
+            frameborder="0"
+            allowfullscreen
+        ></iframe>
+        
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Get-Summary-Information">Get Summary Information<a class="anchor-link" href="#Get-Summary-Information">&#182;</a></h2><p>Using the function entryInfoTabs(), we can get the link to navigate to each information tab including company summary, directors, shareholders and addresses. To make the code efficient, I used "entrySoup"(the soup of a company page given its company number) as  an input for functions defined to get information from each tab. But the code can also be adjusted to get similar information but company number as input. This will be more clear after looking at the following functions and their sample output.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[59]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># get summary information  </span>
+<span class="k">def</span> <span class="nf">getSummaryInfo</span><span class="p">(</span><span class="n">entrySoup</span><span class="p">):</span>
+    
+    <span class="sd">&quot;&quot;&quot;The function getSummaryInfo gets the soup of an entry(a company) as input and</span>
+<span class="sd">    returns relevant summary informations as a dictionary where the keys </span>
+<span class="sd">    are the informations we are interested in and the values are their values.&quot;&quot;&quot;</span>
+
+    <span class="n">divs</span><span class="o">=</span> <span class="n">entrySoup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span><span class="s2">&quot;row&quot;</span><span class="p">})</span>
+    <span class="n">summary</span><span class="o">=</span><span class="p">{}</span>
+    <span class="k">for</span> <span class="n">div</span> <span class="ow">in</span> <span class="n">divs</span><span class="p">:</span>
+        <span class="n">labl</span><span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">)</span>
+        <span class="k">try</span> <span class="p">:</span> 
+            <span class="k">if</span> <span class="n">labl</span><span class="o">.</span><span class="n">has_attr</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">):</span>        
+                <span class="n">key</span><span class="o">=</span> <span class="n">labl</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> 
+            <span class="k">elif</span> <span class="n">labl</span><span class="o">.</span><span class="n">has_attr</span><span class="p">(</span><span class="s2">&quot;for&quot;</span><span class="p">):</span>
+                <span class="n">key</span> <span class="o">=</span><span class="n">labl</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">labl</span><span class="o">.</span><span class="n">has_attr</span><span class="p">(</span><span class="s2">&quot;for&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">labl</span><span class="o">.</span><span class="n">has_attr</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">):</span>
+                <span class="n">key</span><span class="o">=</span> <span class="n">labl</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="n">labl</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span> <span class="c1"># clear the content of the label tag</span>
+
+            <span class="c1">#format the key and remove the colon(:)and space </span>
+            <span class="n">key</span><span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> 
+            <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">div</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> 
+            <span class="n">summary</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">=</span> <span class="n">value</span>  <span class="c1"># collect summary information</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+            
+    <span class="c1"># company informations we are interested in, including company link to be used as reference</span>
+    <span class="n">relevantInfo</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CompanyNumber&#39;</span><span class="p">,</span><span class="s1">&#39;Nzbn&#39;</span><span class="p">,</span><span class="s1">&#39;IncorporationDate&#39;</span><span class="p">,</span><span class="s1">&#39;CompanyStatus&#39;</span><span class="p">,</span> <span class="s1">&#39;EntityType&#39;</span><span class="p">,</span> \
+                  <span class="s1">&#39;ConstitutionFiled&#39;</span><span class="p">,</span> <span class="s1">&#39;ArFilingMonth&#39;</span><span class="p">,</span> <span class="s1">&#39;UltimateHoldingCompany&#39;</span><span class="p">,</span><span class="s1">&#39;CompanyRecordLink&#39;</span><span class="p">]</span>
+
+    
+    <span class="c1"># display only relevant summary information </span>
+    <span class="n">relevantSummary</span><span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">summary</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">relevantInfo</span><span class="p">:</span>
+
+            <span class="c1"># Exception handling incase the page doesn&#39;t have the required information</span>
+            <span class="k">try</span><span class="p">:</span> 
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span><span class="s2">&quot;ArFilingMonth&quot;</span><span class="p">:</span>
+                    <span class="n">summary</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">=</span><span class="n">summary</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># to get only relevant value</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span><span class="s2">&quot;UltimateHoldingCompany&quot;</span><span class="p">:</span>
+                    <span class="n">summary</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">=</span><span class="n">summary</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;edit&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="c1"># to get only relevant text</span>
+                <span class="n">relevantSummary</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">=</span> <span class="n">summary</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+    
+    <span class="k">return</span> <span class="n">relevantSummary</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[60]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># sample to see how the summary information looks. To be used as reference I added CompanyRecordLink </span>
+<span class="n">getSummaryInfo</span><span class="p">(</span><span class="n">entrySoup</span><span class="p">)</span>  <span class="c1">#entrySoup=makeAsoup(1658678)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[60]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;CompanyNumber&#39;: &#39;1658678&#39;,
+ &#39;Nzbn&#39;: &#39;9429034670484&#39;,
+ &#39;IncorporationDate&#39;: &#39;27 Jul 2005&#39;,
+ &#39;CompanyStatus&#39;: &#39;Registered&#39;,
+ &#39;EntityType&#39;: &#39;NZ Unlimited Company&#39;,
+ &#39;ConstitutionFiled&#39;: &#39;Yes&#39;,
+ &#39;ArFilingMonth&#39;: &#39;November&#39;,
+ &#39;UltimateHoldingCompany&#39;: &#39;Whitecloud property holdings company&#39;,
+ &#39;CompanyRecordLink&#39;: &#39;http://app.companiesoffice.govt.nz/co/1658678&#39;}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Get-Information-about-Directors">Get Information about Directors<a class="anchor-link" href="#Get-Information-about-Directors">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[61]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">getDirectorsInfo</span><span class="p">(</span><span class="n">entrySoup</span><span class="p">):</span> 
+    <span class="sd">&quot;&quot;&quot;The function getDirectorsInfo() gets the soup of a company as an input </span>
+<span class="sd">    and returns the list of company directors and thier informations.&quot;&quot;&quot;</span>
+    
+    <span class="n">director</span><span class="o">=</span> <span class="n">entryInfoTabs</span><span class="p">(</span><span class="n">entrySoup</span><span class="p">)[</span><span class="s2">&quot;directorsTab&quot;</span><span class="p">]</span> <span class="c1"># get the link that contains directors information </span>
+    <span class="n">directorSoup</span><span class="o">=</span> <span class="n">getSoup</span><span class="p">(</span><span class="n">director</span><span class="p">)</span> <span class="c1"># make a soup for a page containing directors information</span>
+    
+    <span class="c1"># collect directors information from the page</span>
+    
+    <span class="n">dirs</span><span class="o">=</span> <span class="n">directorSoup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;td&quot;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;director&quot;</span><span class="p">})</span><span class="c1"># all &lt;td&gt; tags with attribute class=&quot;director&quot;</span>
+    <span class="n">dirList</span><span class="o">=</span><span class="p">[]</span> <span class="c1"># place holder for directors list</span>
+    <span class="n">dirInfo</span><span class="o">=</span><span class="p">{}</span> <span class="c1"># place holder for director&#39;s information</span>
+
+    <span class="k">for</span> <span class="n">dr</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">:</span> <span class="c1"># loop over directors </span>
+        <span class="n">drow</span><span class="o">=</span> <span class="n">dr</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;row&quot;</span><span class="p">})</span> <span class="c1"># all &lt;div&gt; tags with attribute class=&quot;row&quot;</span>
+        <span class="n">dirInfo</span><span class="o">=</span><span class="p">{}</span> <span class="c1"># make empty for the next iteration/director/</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">drow</span><span class="p">:</span>
+            <span class="n">rlabel</span><span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">)</span>
+            <span class="n">rname</span><span class="o">=</span><span class="n">rlabel</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span> <span class="c1"># get the info name </span>
+            <span class="n">rvalue</span><span class="o">=</span> <span class="n">rlabel</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">rname</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="c1"># get the formated value </span>
+            <span class="n">rvalue</span><span class="o">=</span><span class="n">rvalue</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">rname</span><span class="o">=</span><span class="n">rname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="c1"># delete the colon(:) from the info name</span>
+
+            <span class="n">dirInfo</span><span class="p">[</span><span class="n">rname</span><span class="p">]</span><span class="o">=</span> <span class="n">rvalue</span> <span class="c1"># collect director&#39;s information </span>
+
+            <span class="k">try</span> <span class="p">:</span> <span class="c1"># try if the following information are available</span>
+                
+                <span class="c1"># if the information is about consent and shareholder </span>
+                <span class="k">if</span> <span class="n">rname</span><span class="o">==</span><span class="s2">&quot;Consent&quot;</span> <span class="ow">or</span> <span class="n">rname</span><span class="o">==</span><span class="s2">&quot;Shareholder&quot;</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="n">dirInfo</span><span class="p">[</span><span class="n">rname</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>  <span class="c1"># pass if the key is not found</span>
+        <span class="n">dirList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dirInfo</span><span class="p">)</span> <span class="c1"># adds each directors to the list if there are more than one</span>
+
+    <span class="k">return</span> <span class="n">dirList</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[62]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># sample view of directors information </span>
+<span class="n">getDirectorsInfo</span><span class="p">(</span><span class="n">entrySoup</span><span class="p">)</span> <span class="c1"># entrySoup=makeAsoup(1658678)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[62]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[{&#39;Full legal name&#39;: &#39;Melanie  Joy BARBER&#39;,
+  &#39;Residential Address&#39;: &#39;15 Tipperary Lane, Patumahoe, Auckland, 2679, New Zealand&#39;,
+  &#39;Appointment Date&#39;: &#39;02 Sep 2008&#39;},
+ {&#39;Full legal name&#39;: &#39;Matthew  Gary COCKRAM&#39;,
+  &#39;Residential Address&#39;: &#39;4 Fairholme Avenue, Epsom, Auckland, 1023, New Zealand&#39;,
+  &#39;Appointment Date&#39;: &#39;27 Jul 2005&#39;},
+ {&#39;Full legal name&#39;: &#39;Thomas  Albert Cecil MURRAY&#39;,
+  &#39;Residential Address&#39;: &#39;25 Ewen Street, Hauraki, Auckland, 0622, New Zealand&#39;,
+  &#39;Appointment Date&#39;: &#39;27 Jul 2005&#39;}]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Get-Shareholders-Information">Get Shareholders Information<a class="anchor-link" href="#Get-Shareholders-Information">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[63]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">getSharesInfo</span><span class="p">(</span><span class="n">entrySoup</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The function getSharesInfo() gets the soup of a company as an input </span>
+<span class="sd">    and returns the list of company shareholders and thier informations.&quot;&quot;&quot;</span>
+
+    <span class="n">shareholder</span><span class="o">=</span> <span class="n">entryInfoTabs</span><span class="p">(</span><span class="n">entrySoup</span><span class="p">)[</span><span class="s2">&quot;shareholdingsTab&quot;</span><span class="p">]</span><span class="c1"># get the link that contains shareholders information </span>
+    <span class="n">shareSoup</span><span class="o">=</span> <span class="n">getSoup</span><span class="p">(</span><span class="n">shareholder</span><span class="p">)</span> <span class="c1"># get the soup for shareholder</span>
+
+    <span class="c1"># collect shareholders information from the page</span>
+    
+    <span class="c1"># a list containing allocations </span>
+    <span class="n">shares</span><span class="o">=</span> <span class="n">shareSoup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;allocationDetail&quot;</span><span class="p">})</span><span class="c1"># all &lt;div&gt; tags with attribute class=&quot;allocationDetail&quot;</span>
+
+    <span class="n">shareInfo</span><span class="o">=</span><span class="p">[]</span> <span class="c1"># place holder for shareholder&#39;s information</span>
+    <span class="n">shareList</span><span class="o">=</span><span class="p">[]</span> <span class="c1"># place holder for shareholder list</span>
+    
+    <span class="k">for</span> <span class="n">share</span>  <span class="ow">in</span> <span class="n">shares</span><span class="p">:</span> <span class="c1"># loop over allocations/shareholders</span>
+        <span class="n">drow</span><span class="o">=</span> <span class="n">share</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;row&quot;</span><span class="p">})</span> <span class="c1"># all &lt;div&gt; tags with attribute class=&quot;row&quot;</span>
+        <span class="n">shareInfo</span><span class="o">=</span><span class="p">[]</span> <span class="c1"># make empty for next shareholder</span>
+        <span class="n">count</span><span class="o">=</span><span class="mi">0</span> <span class="c1"># counter </span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">drow</span><span class="p">:</span>
+            <span class="n">nextrow</span><span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">find_next</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">)</span>
+            <span class="n">nextrow</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>  <span class="c1"># clear the first label tag </span>
+
+            <span class="n">count</span><span class="o">=</span><span class="n">count</span><span class="o">+</span><span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">count</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">rtext</span><span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span>
+                <span class="n">allocation</span><span class="o">=</span><span class="n">rtext</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span> <span class="c1"># split  share number and share portion</span>
+                <span class="n">shareNum</span><span class="o">=</span> <span class="n">allocation</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># share number </span>
+                <span class="n">sharePort</span><span class="o">=</span> <span class="n">allocation</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="c1"># share portion </span>
+                <span class="n">shareInfo</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">shareNum</span><span class="p">,</span> <span class="n">sharePort</span><span class="p">])</span> <span class="c1"># add share number and portion to the list</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">rtext</span><span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">shareInfo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rtext</span><span class="p">)</span> <span class="c1"># information about a shareholder</span>
+
+        <span class="n">count</span><span class="o">=</span><span class="mi">0</span> <span class="c1"># to restart counting for the next shareholder </span>
+
+        <span class="c1"># name the information gathered </span>
+        <span class="n">shareInfoDic</span><span class="o">=</span><span class="p">{}</span> <span class="c1"># to create a dictionary for shareholder info</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s2">&quot;ShareNumber&quot;</span><span class="p">,</span><span class="s2">&quot;SharePortion&quot;</span><span class="p">,</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="s2">&quot;Address&quot;</span><span class="p">],</span> <span class="n">shareInfo</span><span class="p">):</span>
+            <span class="n">shareInfoDic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">=</span><span class="n">value</span>
+        <span class="n">shareList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shareInfoDic</span><span class="p">)</span> <span class="c1"># adds each shareholder to the list if there are more than one</span>
+    
+    <span class="k">return</span>  <span class="n">shareList</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[64]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># sample view how shareholders information looks</span>
+<span class="n">getSharesInfo</span><span class="p">(</span><span class="n">entrySoup</span><span class="p">)</span>  <span class="c1">#entrySoup=makeAsoup(1658678)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[64]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[{&#39;ShareNumber&#39;: &#39;1&#39;,
+  &#39;SharePortion&#39;: &#39;(100.00%)&#39;,
+  &#39;Name&#39;: &#39;BRITOMART GROUP COMPANY&#39;,
+  &#39;Address&#39;: &#39;Level 3, 130 Quay Street, Auckland Cbd\r\n,&#39;}]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Get-Information-about-Adresses">Get Information about Adresses<a class="anchor-link" href="#Get-Information-about-Adresses">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[65]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">getAddress</span><span class="p">(</span><span class="n">entrySoup</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The function getAddress() gets the soup of a company as an input </span>
+<span class="sd">    and returns the list of company shareholders and thier informations.&quot;&quot;&quot;</span>
+
+  
+    <span class="c1">#make a soup for addresses page </span>
+    <span class="n">addrUrl</span><span class="o">=</span><span class="n">entryInfoTabs</span><span class="p">(</span><span class="n">entrySoup</span><span class="p">)[</span><span class="s2">&quot;addressesTab&quot;</span><span class="p">]</span> <span class="c1">#get the link that contains addresses information </span>
+    <span class="n">addressSoup</span><span class="o">=</span> <span class="n">getSoup</span><span class="p">(</span><span class="n">addrUrl</span><span class="p">)</span> <span class="c1"># make a soup for address page</span>
+    
+    <span class="c1"># get list of addreses</span>
+
+    <span class="n">addressLines</span><span class="o">=</span> <span class="n">addressSoup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;addressLine&quot;</span><span class="p">})</span> <span class="c1"># get the &lt;div&gt; tags containing class=&quot;addressLine&quot; </span>
+    <span class="n">address</span><span class="o">=</span><span class="p">{}</span> <span class="c1"># place holder for an address</span>
+    <span class="n">addressList</span><span class="o">=</span> <span class="p">[]</span> <span class="c1">#place holder for collection of addresses</span>
+    
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="k">for</span> <span class="n">adrsLine</span> <span class="ow">in</span> <span class="n">addressLines</span><span class="p">:</span>
+            <span class="n">address</span><span class="p">[</span><span class="s2">&quot;Address&quot;</span><span class="p">]</span><span class="o">=</span> <span class="n">adrsLine</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="c1"># get striped text of the address</span>
+            <span class="n">addressList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">address</span><span class="p">)</span> <span class="c1"># List of addresses</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="k">return</span> <span class="n">addressList</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[66]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Sample Address view </span>
+<span class="n">getAddress</span><span class="p">(</span><span class="n">entrySoup</span><span class="p">)</span> <span class="c1">#entrySoup=makeAsoup(1658678)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[66]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[{&#39;Address&#39;: &#39;Level 3, 130 Quay Street, Auckland\r\n, New Zealand&#39;},
+ {&#39;Address&#39;: &#39;Level 3, 130 Quay Street, Auckland\r\n, New Zealand&#39;}]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Gather-All-Information-Together-,-Save-and-Display">Gather All Information Together , Save and Display<a class="anchor-link" href="#Gather-All-Information-Together-,-Save-and-Display">&#182;</a></h2><p>To make the code flexible, I used the list of company numbers as one of the parameters for saveMultiData() function. But we can also automatically gather information about companies listed in the searched result. For demonstration purposes, information about companies that appeared only in the first page(15 companies) of the search result were collected. First, their numbers were collected as a list using the function getCompanyNumberFP() and then used as an argument for the function saveMultiData() to save and display the summary.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[85]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">saveMultiData</span><span class="p">(</span><span class="n">companyNumList</span><span class="p">,</span> <span class="n">fileName</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The function saveMultiData() saves all relevant informations about companies</span>
+<span class="sd">    whose numbers are given and returns the informations as a dataframe. </span>
+<span class="sd">    We can use this function for a single company but make sure the number is given as list data type</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        -companyNumList is a list that contains company numbers.</span>
+<span class="sd">        -fileName is the name of the file we want to save as. &quot;&quot;&quot;</span>
+    
+    <span class="n">alldata</span><span class="o">=</span><span class="p">[]</span> <span class="c1"># collect information for multiple companies </span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">companyNumList</span><span class="p">)):</span>
+        <span class="n">entrySoup</span><span class="o">=</span> <span class="n">makeAsoup</span><span class="p">(</span><span class="n">companyNumList</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        
+        <span class="n">relevantSummary</span><span class="o">=</span> <span class="n">getSummaryInfo</span><span class="p">(</span><span class="n">entrySoup</span><span class="p">)</span>
+        <span class="n">dirList</span><span class="o">=</span> <span class="n">getDirectorsInfo</span><span class="p">(</span><span class="n">entrySoup</span><span class="p">)</span>
+        <span class="n">shareList</span><span class="o">=</span> <span class="n">getSharesInfo</span><span class="p">(</span><span class="n">entrySoup</span><span class="p">)</span>
+        <span class="n">addressList</span><span class="o">=</span> <span class="n">getAddress</span><span class="p">(</span><span class="n">entrySoup</span><span class="p">)</span>
+    
+        <span class="c1"># collect all informations together in a dictionary for a single company</span>
+        <span class="n">entryData</span><span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">relevantSummary</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;Directors&quot;</span><span class="p">:</span> <span class="n">dirList</span><span class="p">},</span> \
+                    <span class="o">**</span><span class="p">{</span><span class="s2">&quot;Shareholders&quot;</span><span class="p">:</span><span class="n">shareList</span><span class="p">},</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;Addresses&quot;</span><span class="p">:</span><span class="n">addressList</span><span class="p">}}</span> 
+
+        
+        <span class="c1"># gather all companies info </span>
+        <span class="n">alldata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entryData</span><span class="p">)</span>
+    
+    <span class="c1"># save the data as json file </span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fileName</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">jsonfile</span><span class="p">:</span>   
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">alldata</span><span class="p">,</span> <span class="n">jsonfile</span><span class="p">,</span> <span class="n">ensure_ascii</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span> <span class="c1"># read and disply the saved file using pandas as dataframe</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[86]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fristpage</span><span class="o">=</span> <span class="n">getCompanyNumberFP</span><span class="p">(</span><span class="n">soupKiwi</span><span class="p">)</span> <span class="c1"># where; soupKiwi= getSoup(url_Kiwi), url_Kiwi is the url of search result</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fristpage</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[&#39;1658678&#39;, &#39;5671967&#39;, &#39;3258968&#39;, &#39;7481616&#39;, &#39;904994&#39;, &#39;86417&#39;, &#39;6016487&#39;, &#39;863627&#39;, &#39;1116824&#39;, &#39;2060257&#39;, &#39;1837222&#39;, &#39;3922140&#39;, &#39;2307068&#39;, &#39;1472075&#39;, &#39;276849&#39;]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[87]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#save and display the first five companies appeared in the first page of search result </span>
+<span class="n">saveMultiData</span><span class="p">(</span><span class="n">fristpage</span><span class="p">,</span> <span class="s2">&quot;KiwiCompanies&quot;</span><span class="p">)</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[87]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>CompanyNumber</th>
+      <th>Nzbn</th>
+      <th>IncorporationDate</th>
+      <th>CompanyStatus</th>
+      <th>EntityType</th>
+      <th>ConstitutionFiled</th>
+      <th>ArFilingMonth</th>
+      <th>UltimateHoldingCompany</th>
+      <th>CompanyRecordLink</th>
+      <th>Directors</th>
+      <th>Shareholders</th>
+      <th>Addresses</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>1658678</td>
+      <td>9429034670484</td>
+      <td>27 Jul 2005</td>
+      <td>Registered</td>
+      <td>NZ Unlimited Company</td>
+      <td>Yes</td>
+      <td>November</td>
+      <td>Whitecloud property holdings company</td>
+      <td>http://app.companiesoffice.govt.nz/co/1658678</td>
+      <td>[{'Full legal name': 'Melanie  Joy BARBER', 'R...</td>
+      <td>[{'ShareNumber': '1', 'SharePortion': '(100.00...</td>
+      <td>[{'Address': 'Level 3, 130 Quay Street, Auckla...</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>5671967</td>
+      <td>9429041733066</td>
+      <td>30 Apr 2015</td>
+      <td>Registered</td>
+      <td>NZ Unlimited Company</td>
+      <td>Yes</td>
+      <td>October</td>
+      <td>Rank trust limited</td>
+      <td>http://app.companiesoffice.govt.nz/co/5671967</td>
+      <td>[{'Full legal name': 'Gregory  Alan COLE', 'Re...</td>
+      <td>[{'ShareNumber': '31785001', 'SharePortion': '...</td>
+      <td>[{'Address': 'Records in s189(1)(a)-(i) Compan...</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>3258968</td>
+      <td>9429031229883</td>
+      <td>04 Feb 2011</td>
+      <td>Removed</td>
+      <td>NZ Unlimited Company</td>
+      <td>Yes</td>
+      <td>NaN</td>
+      <td>No</td>
+      <td>http://app.companiesoffice.govt.nz/co/3258968</td>
+      <td>[{'Full legal name': 'Gregory  Alan COLE', 'Re...</td>
+      <td>[{'ShareNumber': '1905', 'SharePortion': '(100...</td>
+      <td>[{'Address': 'Records in s189(1)(a)-(i) Compan...</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>7481616</td>
+      <td>9429047473942</td>
+      <td>24 May 2019</td>
+      <td>Registered</td>
+      <td>NZ Unlimited Company</td>
+      <td>Yes</td>
+      <td>October</td>
+      <td>Big apple kiwi trustee limited</td>
+      <td>http://app.companiesoffice.govt.nz/co/7481616</td>
+      <td>[{'Full legal name': 'Gregory  Alan COLE', 'Re...</td>
+      <td>[{'ShareNumber': '4012501', 'SharePortion': '(...</td>
+      <td>[{'Address': 'Records in s189(1)(a)-(i) Compan...</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>904994</td>
+      <td>9429037861971</td>
+      <td>21 Apr 1998</td>
+      <td>Removed</td>
+      <td>NZ Co-operative Company</td>
+      <td>Yes</td>
+      <td>NaN</td>
+      <td>Not specified</td>
+      <td>http://app.companiesoffice.govt.nz/co/904994</td>
+      <td>[{'Full legal name': 'Dennis  Keith DARE', 'Re...</td>
+      <td>[{'ShareNumber': '2000', 'SharePortion': '(9.0...</td>
+      <td>[{'Address': 'Finn &amp; Partners, 486 Alexandra S...</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[89]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># or it is possible to read the saved json file using :</span>
+<span class="n">jsonfile</span><span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;KiwiCompanies&quot;</span><span class="p">)</span>
+<span class="n">jsonfile</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># see the first two companies </span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[89]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>CompanyNumber</th>
+      <th>Nzbn</th>
+      <th>IncorporationDate</th>
+      <th>CompanyStatus</th>
+      <th>EntityType</th>
+      <th>ConstitutionFiled</th>
+      <th>ArFilingMonth</th>
+      <th>UltimateHoldingCompany</th>
+      <th>CompanyRecordLink</th>
+      <th>Directors</th>
+      <th>Shareholders</th>
+      <th>Addresses</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>1658678</td>
+      <td>9429034670484</td>
+      <td>27 Jul 2005</td>
+      <td>Registered</td>
+      <td>NZ Unlimited Company</td>
+      <td>Yes</td>
+      <td>November</td>
+      <td>Whitecloud property holdings company</td>
+      <td>http://app.companiesoffice.govt.nz/co/1658678</td>
+      <td>[{'Full legal name': 'Melanie  Joy BARBER', 'R...</td>
+      <td>[{'ShareNumber': '1', 'SharePortion': '(100.00...</td>
+      <td>[{'Address': 'Level 3, 130 Quay Street, Auckla...</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>5671967</td>
+      <td>9429041733066</td>
+      <td>30 Apr 2015</td>
+      <td>Registered</td>
+      <td>NZ Unlimited Company</td>
+      <td>Yes</td>
+      <td>October</td>
+      <td>Rank trust limited</td>
+      <td>http://app.companiesoffice.govt.nz/co/5671967</td>
+      <td>[{'Full legal name': 'Gregory  Alan COLE', 'Re...</td>
+      <td>[{'ShareNumber': '31785001', 'SharePortion': '...</td>
+      <td>[{'Address': 'Records in s189(1)(a)-(i) Compan...</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>By scraping the web page of New Zealand’s public registry, we could be able to collect information about companies, their address, directors, shareholders and other information and put together in a structured format.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Appendix-:--User-defined-functions-used-in-the-code-and-their-documentation">Appendix :  User-defined functions used in the code and their documentation<a class="anchor-link" href="#Appendix-:--User-defined-functions-used-in-the-code-and-their-documentation">&#182;</a></h3>
+<pre><code>- getSoup(url):
+    """make a soup for a webpage given its url""" 
+
+- getCompanyNumberFP(soup):
+    """get companies' number displayed in the first page of the searched page. 
+       soup: is the soup of a webpage that contains the companies we are looking for. Example 'Kiwi companies'"""
+
+ - makeAsoup(companyNumber):
+     """make a soup for a webpage that contains informtion about a company given its number""" 
+
+ -  entryInfoTabs(entrySoup):
+      """ the function entryInfoTabs gets the soup of an entry (a company) and returns the links to navigate 
+      to each information tab such as summary, directors, addresses, shareholders and so on """
+
+ - getSummaryInfo(entrySoup):
+     """The function getSummaryInfo gets the soup of an entry(a company) as input and
+     returns relevant summary informations as a dictionary where the keys 
+     are the informations we are interested in and the values are their values."""
+
+ - getDirectorsInfo(entrySoup): 
+     """The function getDirectorsInfo() gets the soup of a company as an input 
+      and returns the list of company directors and thier informations."""
+
+ - getSharesInfo(entrySoup):
+     """The function getSharesInfo() gets the soup of a company as an input 
+      and returns the list of company shareholders and thier informations."""
+
+ - getAddress(entrySoup):
+     """The function getAddress() gets the soup of a company as an input 
+      and returns the list of company shareholders and thier informations."""
+
+ - saveMultiData(companyNumList, fileName):
+     """The function saveMultiData() saves all relevant informations about companies
+     whose numbers are given and returns the informations as a dataframe. 
+     We can use this function for a single company but make sure the number is given as list data type
+     Parameters:
+        -companyNumList is a list that contains company numbers.
+        -fileName is the name of the file we want to save as. """</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    </div>
+  </div>
+  
+  
+  
+  <!--comment line starst here -->
+<div id="disqus_thread"></div>
+<script>
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+var disqus_config = function () {
+this.page.url = 'http://datascienceandme.com/WebScraping.html';  // Replace PAGE_URL with your page's canonical URL variable
+//this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+this.page.title = 'Automated file conversion from ipynb to html or pdf'
+};
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//datascienceandme-com-1.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<script id="dsq-count-scr" src="//datascienceandme-com-1.disqus.com/count.js" async></script>       
+
+<!-- Page footer rows -->
+	<footer>
+	  <p>&#169; 2016 Muluemebet G. Ayalew</p>
+	</footer>
+
+</body>
+
+ 
+
+
+</html>
